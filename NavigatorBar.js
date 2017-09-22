@@ -14,7 +14,7 @@ const STATUS_BAR_HEIGHT = 24;
 const StatusBarShape = {
   backgroundColor: PropTypes.string,
   barStyle: PropTypes.oneOf(['default', 'light-content', 'dark-content']),
-  hidden: PropTypes.boolean
+  hidden: PropTypes.bool
 }
 
 export default class NavigationBar extends Component {
@@ -22,7 +22,7 @@ export default class NavigationBar extends Component {
     style: View.propTypes.style,
     title: PropTypes.string,
     titleView: PropTypes.element,
-    hide: PropTypes.boolean,
+    hide: PropTypes.bool,
     leftButton: PropTypes.element,
     rightButton: PropTypes.element,
     statusBar: PropTypes.shape(StatusBarShape)

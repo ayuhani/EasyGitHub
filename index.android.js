@@ -16,6 +16,7 @@ import {
 } from 'react-native';
 import Boy from './Boy';
 import ListViewTest from './ListViewTest';
+import FetchTest from './FetchTest';
 
 export default class EasyGitHub extends Component {
   constructor(props) {
@@ -74,7 +75,8 @@ export default class EasyGitHub extends Component {
                 {/*return <Component navigator={navigator} {...route.params}/>;*/}
               {/*}}*/}
           {/*/>*/}
-          <ListViewTest/>
+          {/*<ListViewTest/>*/}
+          <FetchTest/>
         </View>
     );
   }
