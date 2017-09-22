@@ -1606,7 +1606,7 @@ fbjs@0.8.12:
     setimmediate "^1.0.5"
     ua-parser-js "^0.7.9"
 
-fbjs@^0.8.9:
+fbjs@^0.8.9, fbjs@~0.8.9:
   version "0.8.15"
   resolved "http://registry.npm.taobao.org/fbjs/download/fbjs-0.8.15.tgz#4f0695fdfcc16c37c0b07facec8cb4c4091685b9"
   dependencies:
@@ -1981,6 +1981,10 @@ image-size@^0.6.0:
 immutable@^3.8.1:
   version "3.8.1"
   resolved "http://registry.npm.taobao.org/immutable/download/immutable-3.8.1.tgz#200807f11ab0f72710ea485542de088075f68cd2"
+
+immutable@~3.7.6:
+  version "3.7.6"
+  resolved "http://registry.npm.taobao.org/immutable/download/immutable-3.7.6.tgz#13b4d3cb12befa15482a26fe1b2ebae640071e4b"
 
 imurmurhash@^0.1.4:
   version "0.1.4"
@@ -3433,6 +3437,16 @@ react-devtools-core@^2.5.0:
   dependencies:
     shell-quote "^1.6.1"
     ws "^2.0.3"
+
+react-native-deprecated-custom-components@^0.1.1:
+  version "0.1.1"
+  resolved "http://registry.npm.taobao.org/react-native-deprecated-custom-components/download/react-native-deprecated-custom-components-0.1.1.tgz#bb911f01bf2f47f0a91764757bf918f3216e94e9"
+  dependencies:
+    fbjs "~0.8.9"
+    immutable "~3.7.6"
+    prop-types "^15.5.10"
+    react-timer-mixin "^0.13.2"
+    rebound "^0.0.13"
 
 react-native-tab-navigator@^0.3.4:
   version "0.3.4"
