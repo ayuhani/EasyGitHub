@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   Image
 } from 'react-native';
-import NavigationBar from './NavigatorBar';
+import NavigationBar from './js/common/NavigatorBar';
 
 export default class Girl extends Component {
   constructor(props) {

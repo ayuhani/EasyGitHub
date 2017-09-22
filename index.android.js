@@ -17,6 +17,7 @@ import {
 import Boy from './Boy';
 import ListViewTest from './ListViewTest';
 import FetchTest from './FetchTest';
+import setup from './js/page/setup';
 
 export default class EasyGitHub extends Component {
   constructor(props) {
@@ -101,4 +102,4 @@ const styles = StyleSheet.create({
   }
 });
 
-AppRegistry.registerComponent('EasyGitHub', () => EasyGitHub);
+AppRegistry.registerComponent('EasyGitHub', () => setup);
