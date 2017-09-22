@@ -3448,6 +3448,10 @@ react-native-deprecated-custom-components@^0.1.1:
     react-timer-mixin "^0.13.2"
     rebound "^0.0.13"
 
+react-native-easy-toast@^1.0.6:
+  version "1.0.6"
+  resolved "http://registry.npm.taobao.org/react-native-easy-toast/download/react-native-easy-toast-1.0.6.tgz#e9e2a0c865fcfdb407dbc2341bc3571a7f5da3b5"
+
 react-native-tab-navigator@^0.3.4:
   version "0.3.4"
   resolved "http://registry.npm.taobao.org/react-native-tab-navigator/download/react-native-tab-navigator-0.3.4.tgz#54a18f1ad06a09d4a0de81ff00416bc1b760c960"

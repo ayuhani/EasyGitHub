@@ -15,11 +15,14 @@ import {
   Image
 } from 'react-native';
 import Boy from './Boy';
+import ListViewTest from './ListViewTest';
 
 export default class EasyGitHub extends Component {
   constructor(props) {
     super(props);
-    this.state = {selectedTab: 'tb_polular'};
+    this.state = {
+      selectedTab: 'tb_polular',
+    };
   }
   render() {
     return (
@@ -62,15 +65,16 @@ export default class EasyGitHub extends Component {
               <View style={styles.page2}></View>
             </TabNavigator.Item>
           </TabNavigator>**/}
-          <Navigator
-              initialRoute={{
-                component: Boy
-              }}
-              renderScene={(route, navigator) => {
-                let Component = route.component;
-                return <Component navigator={navigator} {...route.params}/>;
-              }}
-          />
+          {/*<Navigator*/}
+              {/*initialRoute={{*/}
+                {/*component: Boy*/}
+              {/*}}*/}
+              {/*renderScene={(route, navigator) => {*/}
+                {/*let Component = route.component;*/}
+                {/*return <Component navigator={navigator} {...route.params}/>;*/}
+              {/*}}*/}
+          {/*/>*/}
+          <ListViewTest/>
         </View>
     );
   }
