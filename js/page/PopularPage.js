@@ -5,10 +5,14 @@ import {
   Text,
   TouchableOpacity,
   Image,
-  TextInput
+  TextInput,
+  ListView,
+  RefreshControl
 } from 'react-native';
+import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view';
 import NavigationBar from '../common/NavigatorBar';
 import DataRepository from '../expand/dao/DataRepository';
+import RepositoryItem from '../common/RepositoryItem';
 
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
@@ -16,29 +20,6 @@ const QUERY_STR = '&sort=stars';
 export default class PopularPage extends Component {
   constructor(props) {
     super(props);
-    this.dataRepository = new DataRepository();
-    this.state = {
-      result: ''
-    };
-  }
-
-  onLoad() {
-    let url = this.getUrl(this.text);
-    this.dataRepository.fetchNetRepository(url)
-        .then(result => {
-          this.setState({
-            result: JSON.stringify(result)
-          })
-        })
-        .catch(error => {
-          this.setState({
-            result: JSON.stringify(error)
-          })
-        })
-  }
-
-  getUrl(key: string) {
-    return URL + key + QUERY_STR;
   }
 
   render() {
@@ -46,21 +27,82 @@ export default class PopularPage extends Component {
         <View style={styles.container}>
           <NavigationBar
               title={'最热'}
-              style={{backgroundColor: "gray"}}
-              statusBar={{backgroundColor: 'gray'}}
           />
-          <Text
-              onPress={() => {
-                this.onLoad();
-              }}
-              style={styles.text}>获取数据</Text>
-          <TextInput
-              style={{height: 40}}
-              onChangeText={(text) => this.text = text}
-          />
-          <Text>{this.state.result}</Text>
+          <ScrollableTabView
+              renderTabBar={() => <ScrollableTabBar/>}
+              tabBarBackgroundColor="#2196f3"
+              tabBarActiveTextColor="white"
+              tabBarInactiveTextColor="mintcream"
+              tabBarUnderlineStyle={{backgroundColor: 'white', height: 2}}
+          >
+            <PopularTab tabLabel="Android"></PopularTab>
+            <PopularTab tabLabel="iOS"></PopularTab>
+            <PopularTab tabLabel="Java"></PopularTab>
+            <PopularTab tabLabel="JavaScript"></PopularTab>
+            <PopularTab tabLabel="Kotlin"></PopularTab>
+          </ScrollableTabView>
         </View>
     );
+  }
+}
+
+class PopularTab extends Component {
+  constructor(props) {
+    super(props);
+    this.dataRepository = new DataRepository();
+    this.state = {
+      result: '',
+      dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}),
+      isLoading: false
+    };
+  }
+
+  getUrl(key) {
+    return URL + key + QUERY_STR;
+  }
+
+  componentDidMount() {
+    this.loadData();
+  }
+
+  loadData() {
+    this.setState({
+      isLoading: true
+    });
+    let url = this.getUrl(this.props.tabLabel);
+    this.dataRepository.fetchNetRepository(url)
+        .then(result => {
+          this.setState({
+            dataSource: this.state.dataSource.cloneWithRows(result.items),
+            isLoading: false
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        })
+  }
+
+  renderRow(rowData) {
+    return <RepositoryItem rowData={rowData}/>
+  }
+
+  render() {
+    return <View style={{flex: 1}}>
+      <ListView
+          dataSource={this.state.dataSource}
+          renderRow={(rowData) => this.renderRow(rowData)}
+          refreshControl={
+            <RefreshControl
+                refreshing={this.state.isLoading}
+                onRefresh={() => this.loadData()}
+                colors={['#2196f3']}
+                tintColor={'#2196f3'}
+                title='Loading...'
+                titleColor={'#2196f3'}
+            />
+          }
+      />
+    </View>
   }
 }
 

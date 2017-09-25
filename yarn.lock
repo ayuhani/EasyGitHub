@@ -3452,6 +3452,12 @@ react-native-easy-toast@^1.0.6:
   version "1.0.6"
   resolved "http://registry.npm.taobao.org/react-native-easy-toast/download/react-native-easy-toast-1.0.6.tgz#e9e2a0c865fcfdb407dbc2341bc3571a7f5da3b5"
 
+react-native-scrollable-tab-view@^0.6.7:
+  version "0.6.7"
+  resolved "http://registry.npm.taobao.org/react-native-scrollable-tab-view/download/react-native-scrollable-tab-view-0.6.7.tgz#3a5fe8a4bd5bc7eb023f306099323bbd9cc284a2"
+  dependencies:
+    react-timer-mixin "^0.13.3"
+
 react-native-tab-navigator@^0.3.4:
   version "0.3.4"
   resolved "http://registry.npm.taobao.org/react-native-tab-navigator/download/react-native-tab-navigator-0.3.4.tgz#54a18f1ad06a09d4a0de81ff00416bc1b760c960"
@@ -3561,7 +3567,7 @@ react-test-renderer@16.0.0-alpha.12:
     fbjs "^0.8.9"
     object-assign "^4.1.0"
 
-react-timer-mixin@^0.13.2:
+react-timer-mixin@^0.13.2, react-timer-mixin@^0.13.3:
   version "0.13.3"
   resolved "http://registry.npm.taobao.org/react-timer-mixin/download/react-timer-mixin-0.13.3.tgz#0da8b9f807ec07dc3e854d082c737c65605b3d22"
 

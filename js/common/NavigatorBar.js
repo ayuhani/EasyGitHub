@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import {
   View,
   Text,
@@ -7,19 +7,20 @@ import {
   StyleSheet,
   StatusBar
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 const NAVBAR_HEIGHT_ANDROID = 56;
 const NAVBAR_HEIGHT_IOS = 44;
 const STATUS_BAR_HEIGHT = 24;
 const StatusBarShape = {
   backgroundColor: PropTypes.string,
-  barStyle: PropTypes.oneOf(['default', 'light-content', 'dark-content']),
-  hidden: PropTypes.bool
+  //barStyle: PropTypes.oneOf(['default', 'light-content', 'dark-content']),
+  //hidden: PropTypes.bool
 }
 
 export default class NavigationBar extends Component {
   static propTypes = {
-    style: View.propTypes.style,
+    //style: PropTypes.style,
     title: PropTypes.string,
     titleView: PropTypes.element,
     hide: PropTypes.bool,
@@ -29,8 +30,9 @@ export default class NavigationBar extends Component {
   }
   static defaultProps = {
     statusBar: {
-      barStyle: 'light-content',
-      hidden: false
+      backgroundColor: '#2196f3',
+      //barStyle: 'light-content',
+      //hidden: false
     }
   }
   constructor(props) {
@@ -64,7 +66,7 @@ export default class NavigationBar extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    // backgroundColor: 'gray',
+    backgroundColor: '#2196f3',
   },
   navBar: {
     justifyContent: 'space-between',
