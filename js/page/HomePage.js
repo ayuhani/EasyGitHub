@@ -12,6 +12,7 @@ import {
   Image
 } from 'react-native';
 import PopularPage from './PopularPage';
+import MyPage from './my/MyPage';
 import AsyncStorageTest from '../../AsyncStorageTest';
 
 export default class HomePage extends Component {
@@ -59,7 +60,7 @@ export default class HomePage extends Component {
            renderIcon={() => <Image style={styles.bottomImage} source={require('../../res/images/ic_my.png')} />}
            renderSelectedIcon={() => <Image style={[styles.bottomImage, {tintColor: '#2196f3'}]} source={require('../../res/images/ic_my.png')} />}
            onPress={() => this.setState({ selectedTab: 'tb_my' })}>
-           <View style={styles.page2}></View>
+           <MyPage {...this.props}/>
            </TabNavigator.Item>
            </TabNavigator>
         </View>
