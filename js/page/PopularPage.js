@@ -13,6 +13,7 @@ import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-v
 import NavigationBar from '../common/NavigatorBar';
 import DataRepository from '../expand/dao/DataRepository';
 import RepositoryItem from '../common/RepositoryItem';
+import LanguageDao, {FLAG_LANGUAGE} from '../expand/dao/LanguageDao';
 
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
@@ -20,32 +21,55 @@ const QUERY_STR = '&sort=stars';
 export default class PopularPage extends Component {
   constructor(props) {
     super(props);
+    this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key);
+    this.state = {
+      languages: []
+    }
+  }
+
+  componentDidMount() {
+    // 组件挂载完成，加载本地的key
+    this.loadData();
+  }
+
+  // 加载数据
+  loadData() {
+    this.languageDao.fetch()
+        .then(result => {
+          this.setState({
+            languages: result // 得到的是json格式数组对象
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        })
   }
 
   render() {
+    let content = this.state.languages.length > 0 ? <ScrollableTabView
+        renderTabBar={() => <ScrollableTabBar/>}
+        tabBarBackgroundColor="#2196f3"
+        tabBarActiveTextColor="white"
+        tabBarInactiveTextColor="mintcream"
+        tabBarUnderlineStyle={{backgroundColor: 'white', height: 2}}
+    >
+      {this.state.languages.map((result, i, arr) => {
+        let lan = arr[i];
+        return lan.checked ? <PopularTab tabLabel={lan.name} key={i} path={lan.path}></PopularTab> : null;
+      })}
+    </ScrollableTabView> : null;
     return (
         <View style={styles.container}>
           <NavigationBar
               title={'最热'}
           />
-          <ScrollableTabView
-              renderTabBar={() => <ScrollableTabBar/>}
-              tabBarBackgroundColor="#2196f3"
-              tabBarActiveTextColor="white"
-              tabBarInactiveTextColor="mintcream"
-              tabBarUnderlineStyle={{backgroundColor: 'white', height: 2}}
-          >
-            <PopularTab tabLabel="Android"></PopularTab>
-            <PopularTab tabLabel="iOS"></PopularTab>
-            <PopularTab tabLabel="Java"></PopularTab>
-            <PopularTab tabLabel="JavaScript"></PopularTab>
-            <PopularTab tabLabel="Kotlin"></PopularTab>
-          </ScrollableTabView>
+          {content}
         </View>
     );
   }
 }
 
+// 渲染每一页的列表
 class PopularTab extends Component {
   constructor(props) {
     super(props);
@@ -69,7 +93,7 @@ class PopularTab extends Component {
     this.setState({
       isLoading: true
     });
-    let url = this.getUrl(this.props.tabLabel);
+    let url = this.getUrl(this.props.path);
     this.dataRepository.fetchNetRepository(url)
         .then(result => {
           this.setState({
