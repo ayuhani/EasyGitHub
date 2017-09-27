@@ -7,7 +7,8 @@ import {
   Image,
   TextInput,
   ListView,
-  RefreshControl
+  RefreshControl,
+  DeviceEventEmitter
 } from 'react-native';
 import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view';
 import NavigationBar from '../common/NavigatorBar';
@@ -94,12 +95,35 @@ class PopularTab extends Component {
       isLoading: true
     });
     let url = this.getUrl(this.props.path);
-    this.dataRepository.fetchNetRepository(url)
+    this.dataRepository
+        .fetchRepository(url)
         .then(result => {
+          // 本地获取的是个object
+          // 直接网络获取返回的是个数组
+          let items = result && result.items ? result.items : result ? result : [];
           this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(result.items),
+            dataSource: this.state.dataSource.cloneWithRows(items),
             isLoading: false
           });
+          if (result && result.update_date) {// 缓存
+            if (!this.dataRepository.checkDate(result.update_date)) {
+              DeviceEventEmitter.emit('showToast', '数据过时');
+              return this.dataRepository.fetchNetRepository(url);
+            } else {
+              DeviceEventEmitter.emit('showToast', '显示缓存数据');
+            }
+          } else {
+            DeviceEventEmitter.emit('showToast', '显示网络数据');
+          }
+        })
+        .then(items => {
+          if (!items || items.length === 0) {
+            return;
+          }
+          this.setState({
+            dataSource: this.state.dataSource.cloneWithRows(items),
+          });
+          DeviceEventEmitter.emit('showToast', '显示网络数据');
         })
         .catch(error => {
           console.log(error);

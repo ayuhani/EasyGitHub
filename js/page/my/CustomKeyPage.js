@@ -17,6 +17,7 @@ import CheckBox from 'react-native-check-box';
 export default class CustomKeyPage extends Component {
   constructor(props) {
     super(props);
+    this.isRemoveKey = this.props.isRemoveKey ? true : false; // 判断是移除标签还是自定义标签
     this.languageDao = new LanuageDao(FLAG_LANGUAGE.flag_key);
     this.changeValues = [];
     this.state = {
@@ -74,13 +75,16 @@ export default class CustomKeyPage extends Component {
 
   // checkbox的点击事件
   onClick(data) {
-    data.checked = !data.checked;
+    if (!this.isRemoveKey) {
+      data.checked = !data.checked;
+    }
     ArrayUtil.updateArray(this.changeValues, data);
   }
 
   // 渲染checkbox
   renderCheckBox(data) {
     let leftText = data.name;
+    let isChecked = this.isRemoveKey ? false : data.checked;
     return <CheckBox
         style={{flex: 1, padding: 10}}
         onClick={() => this.onClick(data)}
@@ -95,14 +99,19 @@ export default class CustomKeyPage extends Component {
               style={styles.checkbox_img}
               source={require('./img/ic_check_box_outline_blank.png')}/>
         }
-        isChecked={data.checked}/>
+        isChecked={isChecked}/>
   }
 
   // 点击保存按钮
-  onSave() {
-    if (this.changeValues.length == 0) {
+  onSave(isChecked: boolean) {
+    if (!isChecked && this.changeValues.length == 0) {
       this.props.navigator.pop();
       return;
+    }
+    if (this.isRemoveKey) {
+      for (let i = 0; i < this.changeValues.length; i++) {
+        ArrayUtil.removeItem(this.state.dataArray, this.changeValues[i]);
+      }
     }
     this.languageDao.save(this.state.dataArray);
     this.props.navigator.pop();
@@ -116,13 +125,12 @@ export default class CustomKeyPage extends Component {
     }
     Alert.alert(
         '提示',
-        '要保存修改吗？',
+        '在退出之前，要保存您的修改吗？',
         [
-          {text: '不保存', onPress: () => this.props.navigator.pop(), style: 'cancel'},
+          {text: '不需要', onPress: () => this.props.navigator.pop(), style: 'cancel'},
           {
-            text: '保存', onPress: () => {
-            this.languageDao.save(this.state.dataArray);
-            this.props.navigator.pop()
+            text: '是的', onPress: () => {
+            this.onSave(true);
           }
           },
         ],
@@ -131,19 +139,21 @@ export default class CustomKeyPage extends Component {
   }
 
   render() {
+    let title = this.isRemoveKey ? '移除标签' : '自定义标签';
+    let rightButtonTitle = this.isRemoveKey ? '移除' : '保存';
     let rightButton = <TouchableOpacity
         onPress={() => {
-          this.onSave();
+          this.onSave(false);
         }}
     >
       <View>
-        <Text style={styles.title}>保存</Text>
+        <Text style={styles.title}>{rightButtonTitle}</Text>
       </View>
     </TouchableOpacity>;
     return (
         <View>
           <NavigationBar
-              title={'自定义标签'}
+              title={title}
               leftButton={ViewUtil.getLeftButton(() => {
                 this.onBack();
               })}

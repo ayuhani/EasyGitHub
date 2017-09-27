@@ -52,4 +52,20 @@ export default class ArrayUtil {
     return true;
   }
 
+  /**
+   * 移除数组指定的元素
+   * @param array
+   * @param item
+   */
+  static removeItem(array, item) {
+    if (!array) {
+      return;
+    }
+    for (let i = 0; i < array.length; i++) {
+      if (item === array[i]) {
+        array.splice(i, 1);
+      }
+    }
+  }
+
 }
