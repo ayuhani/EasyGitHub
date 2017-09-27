@@ -11,7 +11,7 @@ import keys from '../../../res/data/keys.json';
 
 export var FLAG_LANGUAGE = {
   flag_language: 'flag_language_language', //
-  flag_key: 'flag_language_key' // 这是标签用到的
+  flag_key: 'flag_language_key' // 这是处理标签用到的
 };
 
 export default class LanguageDao {

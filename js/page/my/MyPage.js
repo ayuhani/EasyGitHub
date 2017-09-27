@@ -1,10 +1,11 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   View,
   Text
 } from 'react-native';
 import NavigationBar from '../../common/NavigatorBar';
 import CustomKeyPage from './CustomKeyPage';
+import SortKeyPage from './SortKeyPage';
 
 export default class MyPage extends Component {
 
@@ -14,12 +15,23 @@ export default class MyPage extends Component {
           <NavigationBar
               title={'我的'}
           />
-          <Text onPress={() => {
-            this.props.navigator.push({
-              component: CustomKeyPage,
-              params: {...this.props}
-            })
-          }}>自定义标签</Text>
+          <Text
+              style={{margin: 16}}
+              onPress={() => {
+                this.props.navigator.push({
+                  component: CustomKeyPage,
+                  params: {...this.props}
+                })
+              }}>自定义标签</Text>
+
+          <Text
+              style={{margin: 16}}
+              onPress={() => {
+                this.props.navigator.push({
+                  component: SortKeyPage,
+                  params: {...this.props}
+                })
+              }}>标签排序</Text>
         </View>
     );
   }

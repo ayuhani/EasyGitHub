@@ -118,13 +118,15 @@ export default class CustomKeyPage extends Component {
         '提示',
         '要保存修改吗？',
         [
-          {text: '不保存', onPress: () => this.props.navigator.pop()},
-          {text: '保存', onPress: () => {
+          {text: '不保存', onPress: () => this.props.navigator.pop(), style: 'cancel'},
+          {
+            text: '保存', onPress: () => {
             this.languageDao.save(this.state.dataArray);
             this.props.navigator.pop()
-          }},
+          }
+          },
         ],
-        { cancelable: false }
+        {cancelable: false}
     )
   }
 
