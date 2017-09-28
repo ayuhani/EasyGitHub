@@ -8,7 +8,7 @@ import {
   Image,
   Alert
 } from 'react-native';
-import NavigationBar from '../../common/NavigatorBar';
+import NavigationBar from '../../common/NavigationBar';
 import ViewUtil from '../../util/ViewUtil';
 import ArrayUtil from '../../util/ArrayUtil';
 import LanuageDao, {FLAG_LANGUAGE} from '../../expand/dao/LanguageDao';

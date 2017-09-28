@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   Image
 } from 'react-native';
-import NavigationBar from './js/common/NavigatorBar';
+import NavigationBar from './js/common/NavigationBar';
 import HttpUtil from './HttpUtil';
 
 export default class FetchTest extends Component {

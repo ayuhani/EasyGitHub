@@ -11,10 +11,11 @@ import {
   DeviceEventEmitter
 } from 'react-native';
 import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view';
-import NavigationBar from '../common/NavigatorBar';
+import NavigationBar from '../common/NavigationBar';
 import DataRepository from '../expand/dao/DataRepository';
 import RepositoryItem from '../common/RepositoryItem';
 import LanguageDao, {FLAG_LANGUAGE} from '../expand/dao/LanguageDao';
+import RepositoryDetail from "./RepositoryDetail";
 
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
@@ -56,7 +57,7 @@ export default class PopularPage extends Component {
     >
       {this.state.languages.map((result, i, arr) => {
         let lan = arr[i];
-        return lan.checked ? <PopularTab tabLabel={lan.name} key={i} path={lan.path}></PopularTab> : null;
+        return lan.checked ? <PopularTab tabLabel={lan.name} key={i} path={lan.path} {...this.props}></PopularTab> : null;
       })}
     </ScrollableTabView> : null;
     return (
@@ -130,8 +131,22 @@ class PopularTab extends Component {
         })
   }
 
+  // item的点击事件
+  onItemClick(rowData) {
+    this.props.navigator.push({
+      component: RepositoryDetail,
+      params: {
+        item: rowData,
+        ...this.props
+      }
+    })
+  }
+
   renderRow(rowData) {
-    return <RepositoryItem rowData={rowData}/>
+    return <RepositoryItem
+        rowData={rowData}
+        onItemClick={() => this.onItemClick(rowData)}
+    />
   }
 
   render() {

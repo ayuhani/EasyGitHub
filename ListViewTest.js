@@ -9,7 +9,7 @@ import {
   Dimensions,
   RefreshControl
 } from 'react-native';
-import NavigationBar from './js/common/NavigatorBar';
+import NavigationBar from './js/common/NavigationBar';
 import Toast, { DURATION } from 'react-native-easy-toast'
 
 var movieData = require('./movie.json').movies;

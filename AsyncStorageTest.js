@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import Toast, {DURATION} from 'react-native-easy-toast';
 import Girl from './Girl';
-import NavigationBar from './js/common/NavigatorBar';
+import NavigationBar from './js/common/NavigationBar';
 
 const KEY = 'text';
 

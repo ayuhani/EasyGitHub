@@ -9,7 +9,10 @@ import {
 
 export default class RepositoryItem extends Component {
   render() {
-    return <TouchableOpacity style={styles.container}>
+    return <TouchableOpacity
+        style={styles.container}
+        onPress={this.props.onItemClick}
+    >
       <View style={styles.item_container}>
         <Text style={styles.title}>{this.props.rowData.full_name}</Text>
         <Text style={styles.description}>{this.props.rowData.description}</Text>
