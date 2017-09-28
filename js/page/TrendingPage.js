@@ -13,17 +13,16 @@ import {
 import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view';
 import NavigationBar from '../common/NavigationBar';
 import DataRepository, {FLAG_STORAGE} from '../expand/dao/DataRepository';
-import RepositoryItem from '../common/PopularItem';
+import TrendingItem from '../common/TrendingItem';
 import LanguageDao, {FLAG_LANGUAGE} from '../expand/dao/LanguageDao';
 import RepositoryDetail from "./RepositoryDetail";
 
-const URL = 'https://api.github.com/search/repositories?q=';
-const QUERY_STR = '&sort=stars';
+const URL = 'https://github.com/trending/';
 
 export default class PopularPage extends Component {
   constructor(props) {
     super(props);
-    this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key);
+    this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_language);
     this.state = {
       languages: []
     }
@@ -58,13 +57,13 @@ export default class PopularPage extends Component {
       {this.state.languages.map((result, i, arr) => {
         let lan = arr[i];
         return lan.checked ?
-            <PopularTab tabLabel={lan.name} key={i} path={lan.path} {...this.props}></PopularTab> : null;
+            <TrendingTab tabLabel={lan.name} key={i} path={lan.path} {...this.props}></TrendingTab> : null;
       })}
     </ScrollableTabView> : null;
     return (
         <View style={styles.container}>
           <NavigationBar
-              title={'最热'}
+              title={'趋势'}
           />
           {content}
         </View>
@@ -73,10 +72,10 @@ export default class PopularPage extends Component {
 }
 
 // 渲染每一页的列表
-class PopularTab extends Component {
+class TrendingTab extends Component {
   constructor(props) {
     super(props);
-    this.dataRepository = new DataRepository(FLAG_STORAGE.flag_popular);
+    this.dataRepository = new DataRepository(FLAG_STORAGE.flag_trending);
     this.state = {
       result: '',
       dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}),
@@ -84,8 +83,8 @@ class PopularTab extends Component {
     };
   }
 
-  getUrl(key) {
-    return URL + key + QUERY_STR;
+  getUrl(category, timeSpan) {
+    return URL + category + timeSpan;
   }
 
   componentDidMount() {
@@ -96,7 +95,7 @@ class PopularTab extends Component {
     this.setState({
       isLoading: true
     });
-    let url = this.getUrl(this.props.path);
+    let url = this.getUrl(this.props.path, '?since=daily');
     this.dataRepository
         .fetchRepository(url)
         .then(result => {
@@ -143,8 +142,9 @@ class PopularTab extends Component {
     })
   }
 
+  // 渲染行
   renderRow(rowData) {
-    return <RepositoryItem
+    return <TrendingItem
         rowData={rowData}
         onItemClick={() => this.onItemClick(rowData)}
     />
