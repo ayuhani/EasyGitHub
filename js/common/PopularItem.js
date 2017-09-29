@@ -7,19 +7,56 @@ import {
   TouchableOpacity
 } from 'react-native';
 
-export default class RepositoryItem extends Component {
+export default class PopularItem extends Component {
+
+  constructor(props) {
+    super(props);
+    let isFavorite = this.props.projectModel.isFavorite;
+    this.state = {
+      isFavorite: isFavorite,
+      favoriteIcon: isFavorite ? require('../../res/images/ic_star.png') :
+          require('../../res/images/ic_unstar_transparent.png')
+    };
+  }
+
+  setFavoriteState(isFavorite) {
+    this.setState({
+      isFavorite: isFavorite,
+      favoriteIcon: isFavorite ? require('../../res/images/ic_star.png')
+          : require('../../res/images/ic_unstar_transparent.png')
+    })
+  }
+
+  // 重绘
+  // componentWillReceiveProps(nextProps) {
+  //   this.setFavoriteState(nextProps.projectModel.isFavorite);
+  // }
+
+  // 按下收藏按钮触发的事件
+  onPressFavorite() {
+    this.setFavoriteState(!this.state.isFavorite);
+    this.props.onFavorite(this.props.projectModel.rowData, this.state.isFavorite);
+  }
+
   render() {
-    let data = this.props.rowData;
+    let data = this.props.projectModel.rowData;
+    let favoriteButton = <TouchableOpacity
+        onPress={() => this.onPressFavorite()}
+    >
+      <Image
+          style={{width: 24, height: 24, tintColor: '#2196F3'}}
+          source={this.state.favoriteIcon}/>
+    </TouchableOpacity>;
     return <TouchableOpacity
         style={styles.container}
-        onPress={this.props.onItemClick}
+        onPress={this.props.onItemClick()}
     >
       <View style={styles.item_container}>
         <Text style={styles.title}>{data.full_name}</Text>
         <Text style={styles.description}>{data.description}</Text>
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Text>Author:</Text>
+            <Text>Author: </Text>
             <Image
                 style={{width: 24, height: 24}}
                 source={{uri: data.owner.avatar_url}}/>
@@ -28,9 +65,7 @@ export default class RepositoryItem extends Component {
             <Text>Stars:</Text>
             <Text>{data.stargazers_count}</Text>
           </View>
-          <Image
-              style={{width: 24, height: 24}}
-              source={require('../../res/images/ic_star.png')}/>
+          {favoriteButton}
         </View>
       </View>
     </TouchableOpacity>

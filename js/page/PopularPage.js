@@ -13,9 +13,10 @@ import {
 import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view';
 import NavigationBar from '../common/NavigationBar';
 import DataRepository, {FLAG_STORAGE} from '../expand/dao/DataRepository';
-import RepositoryItem from '../common/PopularItem';
+import PopularItem from '../common/PopularItem';
 import LanguageDao, {FLAG_LANGUAGE} from '../expand/dao/LanguageDao';
 import RepositoryDetail from "./RepositoryDetail";
+import ProjectModel from "../model/ProjectModel";
 
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
@@ -92,6 +93,26 @@ class PopularTab extends Component {
     this.loadData();
   }
 
+  /**
+   * 更新Project Item Favorite状态
+   */
+  flushFavoriteState() {
+    let projectModels = [];
+    let items = this.items;
+    for (let i = 0; i < items.length; i++) {
+      projectModels.push(new ProjectModel(items[i], false));
+    }
+    this.updateState({
+      dataSource: this.state.dataSource.cloneWithRows(projectModels),
+      isLoading: false
+    })
+  }
+
+  updateState(dic) {
+    if (!this) return;
+    this.setState(dic);
+  }
+
   loadData() {
     this.setState({
       isLoading: true
@@ -102,11 +123,8 @@ class PopularTab extends Component {
         .then(result => {
           // 本地获取的是个object
           // 直接网络获取返回的是个数组
-          let items = result && result.items ? result.items : result ? result : [];
-          this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(items),
-            isLoading: false
-          });
+          this.items = result && result.items ? result.items : result ? result : [];
+          this.flushFavoriteState();
           if (result && result.update_date) {// 缓存
             if (!this.dataRepository.checkDate(result.update_date)) {
               DeviceEventEmitter.emit('showToast', '数据过时');
@@ -122,31 +140,44 @@ class PopularTab extends Component {
           if (!items || items.length === 0) {
             return;
           }
-          this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(items),
-          });
+          this.items = items;
+          this.flushFavoriteState();
           DeviceEventEmitter.emit('showToast', '显示网络数据');
         })
         .catch(error => {
           console.log(error);
+          this.updateState({
+            isLoading: false
+          })
         })
   }
 
   // item的点击事件
-  onItemClick(rowData) {
+  onItemClick(projectModel) {
     this.props.navigator.push({
       component: RepositoryDetail,
       params: {
-        item: rowData,
+        projectModel: projectModel,
         ...this.props
       }
     })
   }
 
-  renderRow(rowData) {
-    return <RepositoryItem
-        rowData={rowData}
-        onItemClick={() => this.onItemClick(rowData)}
+  /**
+   * favoriteIcon的单击回调函数
+   * @param item
+   * @param isFavorite
+   */
+  onFavorite(item, isFavorite) {
+
+  }
+
+  renderRow(projectModel) {
+    return <PopularItem
+        key={projectModel.rowData.id}
+        projectModel={projectModel}
+        onItemClick={() => this.onItemClick(projectModel)}
+        onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
     />
   }
 
