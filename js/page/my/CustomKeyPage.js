@@ -18,7 +18,7 @@ export default class CustomKeyPage extends Component {
   constructor(props) {
     super(props);
     this.isRemoveKey = this.props.isRemoveKey ? true : false; // 判断是移除标签还是自定义标签
-    this.languageDao = new LanuageDao(FLAG_LANGUAGE.flag_key);
+    this.languageDao = new LanuageDao(this.props.flag);
     this.changeValues = [];
     this.state = {
       dataArray: []
@@ -140,6 +140,7 @@ export default class CustomKeyPage extends Component {
 
   render() {
     let title = this.isRemoveKey ? '移除标签' : '自定义标签';
+    title = this.props.flag === FLAG_LANGUAGE.flag_language ? '自定义语言': title;
     let rightButtonTitle = this.isRemoveKey ? '移除' : '保存';
     let rightButton = <TouchableOpacity
         onPress={() => {

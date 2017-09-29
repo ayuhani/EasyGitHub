@@ -24,7 +24,7 @@ export default class SortKeyPage extends Component {
     this.state = {
       checkedArray: [] // 需要进行排序操作的已订阅key的数组
     }
-    this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key);
+    this.languageDao = new LanguageDao(this.props.flag);
   }
 
   // 装载完成之后读取所有的标签
@@ -68,11 +68,11 @@ export default class SortKeyPage extends Component {
     }
     Alert.alert(
         '提示',
-        '要保存修改吗？',
+        '在退出之前，要保存您的修改吗？',
         [
-          {text: '不保存', onPress: () => this.props.navigator.pop(), style: 'cancel'},
+          {text: '不需要', onPress: () => this.props.navigator.pop(), style: 'cancel'},
           {
-            text: '保存', onPress: () => {
+            text: '是的', onPress: () => {
             this.onSave(true);
           }
           },
@@ -112,10 +112,11 @@ export default class SortKeyPage extends Component {
         <Text style={styles.title}>保存</Text>
       </View>
     </TouchableOpacity>;
+    let title = this.props.flag === FLAG_LANGUAGE.flag_key ? '标签排序' : '语言排序';
     return (
         <View style={{flex: 1}}>
           <NavigationBar
-              title={'标签排序'}
+              title={title}
               leftButton={ViewUtil.getLeftButton(() => {
                 this.onBack();
               })}

@@ -127,7 +127,7 @@ export default class PopularPage extends Component {
             onPress={() => this.onSelectedTimeSpan(arr[i])}
         >
           <Text
-              style={{fontSize: 18, color: 'white', paddingLeft: 10, paddingRight: 10, paddingTop: 5, paddingBottom: 5}}
+              style={{fontSize: 18, color: 'white', padding: 5}}
           >{arr[i].showText}</Text>
         </TouchableOpacity>
       })}
