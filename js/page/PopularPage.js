@@ -17,9 +17,12 @@ import PopularItem from '../common/PopularItem';
 import LanguageDao, {FLAG_LANGUAGE} from '../expand/dao/LanguageDao';
 import RepositoryDetail from "./RepositoryDetail";
 import ProjectModel from "../model/ProjectModel";
+import FavoriteDao from '../expand/dao/FavoriteDao';
+import Utils from '../util/Utils';
 
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
+var favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
 
 export default class PopularPage extends Component {
   constructor(props) {
@@ -81,7 +84,8 @@ class PopularTab extends Component {
     this.state = {
       result: '',
       dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}),
-      isLoading: false
+      isLoading: false,
+      favoriteKeys: []
     };
   }
 
@@ -100,7 +104,7 @@ class PopularTab extends Component {
     let projectModels = [];
     let items = this.items;
     for (let i = 0; i < items.length; i++) {
-      projectModels.push(new ProjectModel(items[i], false));
+      projectModels.push(new ProjectModel(items[i], Utils.checkFavorite(items[i], this.state.favoriteKeys)));
     }
     this.updateState({
       dataSource: this.state.dataSource.cloneWithRows(projectModels),
@@ -111,6 +115,22 @@ class PopularTab extends Component {
   updateState(dic) {
     if (!this) return;
     this.setState(dic);
+  }
+
+  // 获取收藏的列表
+  getFavoriteKeys() {
+    favoriteDao.getFavoriteKeys()
+        .then(keys => {
+          if (keys) {
+            this.updateState({
+              favoriteKeys: keys
+            })
+          }
+          this.flushFavoriteState();
+        })
+        .catch(e => {
+          this.flushFavoriteState();
+        })
   }
 
   loadData() {
@@ -124,7 +144,7 @@ class PopularTab extends Component {
           // 本地获取的是个object
           // 直接网络获取返回的是个数组
           this.items = result && result.items ? result.items : result ? result : [];
-          this.flushFavoriteState();
+          this.getFavoriteKeys();
           if (result && result.update_date) {// 缓存
             if (!this.dataRepository.checkDate(result.update_date)) {
               DeviceEventEmitter.emit('showToast', '数据过时');
@@ -141,7 +161,7 @@ class PopularTab extends Component {
             return;
           }
           this.items = items;
-          this.flushFavoriteState();
+          this.getFavoriteKeys();
           DeviceEventEmitter.emit('showToast', '显示网络数据');
         })
         .catch(error => {
@@ -169,7 +189,11 @@ class PopularTab extends Component {
    * @param isFavorite
    */
   onFavorite(item, isFavorite) {
-
+    if (isFavorite) {
+      favoriteDao.saveFavoriteItem(item.id.toString(), JSON.stringify(item));
+    } else {
+      favoriteDao.removeFavoriteItem(item.id.toString());
+    }
   }
 
   renderRow(projectModel) {

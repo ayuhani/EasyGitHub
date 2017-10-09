@@ -34,8 +34,9 @@ export default class PopularItem extends Component {
 
   // 按下收藏按钮触发的事件
   onPressFavorite() {
-    this.setFavoriteState(!this.state.isFavorite);
-    this.props.onFavorite(this.props.projectModel.rowData, this.state.isFavorite);
+    let isFavorite = !this.state.isFavorite;
+    this.setFavoriteState(isFavorite);
+    this.props.onFavorite(this.props.projectModel.rowData, isFavorite);
   }
 
   render() {
@@ -49,7 +50,7 @@ export default class PopularItem extends Component {
     </TouchableOpacity>;
     return <TouchableOpacity
         style={styles.container}
-        onPress={this.props.onItemClick()}
+        onPress={this.props.onItemClick}
     >
       <View style={styles.item_container}>
         <Text style={styles.title}>{data.full_name}</Text>

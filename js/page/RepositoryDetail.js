@@ -17,8 +17,8 @@ export default class RepositoryDetail extends Component {
     super(props);
     this.state = {
       canGoBack: false,
-      title: this.props.item.full_name ? this.props.item.full_name : this.props.item.fullName,
-      url: this.props.item.html_url ? this.props.item.html_url : TRENDING_URL + this.props.item.fullName
+      title: this.props.projectModel.rowData.full_name ? this.props.projectModel.rowData.full_name : this.props.projectModel.rowData.fullName,
+      url: this.props.projectModel.rowData.html_url ? this.props.projectModel.rowData.html_url : TRENDING_URL + this.props.projectModel.rowData.fullName
     }
   }
 

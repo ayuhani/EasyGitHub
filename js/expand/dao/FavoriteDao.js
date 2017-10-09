@@ -6,8 +6,6 @@ import {
   TouchableOpacity,
   AsyncStorage
 } from 'react-native';
-import keys from '../../../res/data/keys.json';
-import langs from '../../../res/data/langs.json';
 
 const FAVORITE_KEY_PREFIX = 'favorite_';
 
@@ -64,7 +62,7 @@ export default class FavoriteDao {
    * @param key
    */
   removeFavoriteItem(key) {
-    AsyncStorage.setItem(key, (error) => {
+    AsyncStorage.removeItem(key, (error) => {
       if (!error) {
         this.updateFavoriteKeys(key, false);
       }
@@ -90,6 +88,5 @@ export default class FavoriteDao {
       })
     })
   }
-
 
 }
