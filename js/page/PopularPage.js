@@ -22,6 +22,7 @@ import Utils from '../util/Utils';
 
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
+var dataRepository = new DataRepository(FLAG_STORAGE.flag_popular);
 var favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
 
 export default class PopularPage extends Component {
@@ -80,7 +81,6 @@ export default class PopularPage extends Component {
 class PopularTab extends Component {
   constructor(props) {
     super(props);
-    this.dataRepository = new DataRepository(FLAG_STORAGE.flag_popular);
     this.state = {
       result: '',
       dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}),
@@ -138,7 +138,7 @@ class PopularTab extends Component {
       isLoading: true
     });
     let url = this.getUrl(this.props.path);
-    this.dataRepository
+    dataRepository
         .fetchRepository(url)
         .then(result => {
           // 本地获取的是个object
@@ -146,9 +146,9 @@ class PopularTab extends Component {
           this.items = result && result.items ? result.items : result ? result : [];
           this.getFavoriteKeys();
           if (result && result.update_date) {// 缓存
-            if (!this.dataRepository.checkDate(result.update_date)) {
+            if (!dataRepository.checkDate(result.update_date)) {
               DeviceEventEmitter.emit('showToast', '数据过时');
-              return this.dataRepository.fetchNetRepository(url);
+              return dataRepository.fetchNetRepository(url);
             } else {
               DeviceEventEmitter.emit('showToast', '显示缓存数据');
             }

@@ -9,9 +9,42 @@ import {
 import HTMLView from 'react-native-htmlview';
 
 export default class TrendingItem extends Component {
+
+  constructor(props) {
+    super(props);
+    let isFavorite = this.props.projectModel.isFavorite;
+    this.state = {
+      isFavorite: isFavorite,
+      favoriteIcon: isFavorite ? require('../../res/images/ic_star.png') :
+          require('../../res/images/ic_unstar_transparent.png')
+    };
+  }
+
+  setFavoriteState(isFavorite) {
+    this.setState({
+      isFavorite: isFavorite,
+      favoriteIcon: isFavorite ? require('../../res/images/ic_star.png')
+          : require('../../res/images/ic_unstar_transparent.png')
+    })
+  }
+
+  // 按下收藏按钮触发的事件
+  onPressFavorite() {
+    let isFavorite = !this.state.isFavorite;
+    this.setFavoriteState(isFavorite);
+    this.props.onFavorite(this.props.projectModel.rowData, isFavorite);
+  }
+
   render() {
-    let data = this.props.rowData;
+    let data = this.props.projectModel.rowData;
     let description = '<p>' + data.description + '</p>';
+    let favoriteButton = <TouchableOpacity
+        onPress={() => this.onPressFavorite()}
+    >
+      <Image
+          style={{width: 24, height: 24, tintColor: '#2196F3'}}
+          source={this.state.favoriteIcon}/>
+    </TouchableOpacity>;
     return <TouchableOpacity
         style={styles.container}
         onPress={this.props.onItemClick}
@@ -35,9 +68,7 @@ export default class TrendingItem extends Component {
                   source={{uri: arr[i]}}/>
             })}
           </View>
-          <Image
-              style={{width: 24, height: 24}}
-              source={require('../../res/images/ic_star.png')}/>
+          {favoriteButton}
         </View>
       </View>
     </TouchableOpacity>
