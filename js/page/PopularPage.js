@@ -36,11 +36,11 @@ export default class PopularPage extends Component {
 
   componentDidMount() {
     // 组件挂载完成，加载本地的key
-    this.loadData();
+    this.loadLanguage();
   }
 
   // 加载数据
-  loadData() {
+  loadLanguage() {
     this.languageDao.fetch()
         .then(result => {
           this.setState({
@@ -81,6 +81,7 @@ export default class PopularPage extends Component {
 class PopularTab extends Component {
   constructor(props) {
     super(props);
+    this.isFavoriteChanged = false;
     this.state = {
       result: '',
       dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}),
@@ -94,7 +95,23 @@ class PopularTab extends Component {
   }
 
   componentDidMount() {
+    this.listener = DeviceEventEmitter.addListener('favoriteChanged_popular', () => {
+      this.isFavoriteChanged = true;
+    });
     this.loadData();
+  }
+
+  componentWillMount() {
+    if (this.listener) {
+      this.listener.remove();
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.isFavoriteChanged) {
+      this.isFavoriteChanged = false;
+      this.getFavoriteKeys();
+    }
   }
 
   /**

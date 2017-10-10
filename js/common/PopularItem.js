@@ -19,24 +19,25 @@ export default class PopularItem extends Component {
     };
   }
 
-  setFavoriteState(isFavorite) {
-    this.setState({
-      isFavorite: isFavorite,
-      favoriteIcon: isFavorite ? require('../../res/images/ic_star.png')
-          : require('../../res/images/ic_unstar_transparent.png')
-    })
-  }
-
   // 重绘
-  // componentWillReceiveProps(nextProps) {
-  //   this.setFavoriteState(nextProps.projectModel.isFavorite);
-  // }
+  componentWillReceiveProps(nextProps) {
+    this.setFavoriteState(nextProps.projectModel.isFavorite);
+  }
 
   // 按下收藏按钮触发的事件
   onPressFavorite() {
     let isFavorite = !this.state.isFavorite;
     this.setFavoriteState(isFavorite);
     this.props.onFavorite(this.props.projectModel.rowData, isFavorite);
+  }
+
+  setFavoriteState(isFavorite) {
+    this.props.projectModel.isFavorite = isFavorite;
+    this.setState({
+      isFavorite: isFavorite,
+      favoriteIcon: isFavorite ? require('../../res/images/ic_star.png')
+          : require('../../res/images/ic_unstar_transparent.png')
+    })
   }
 
   render() {
