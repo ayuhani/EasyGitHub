@@ -1,9 +1,5 @@
 import React, {Component} from 'react';
 import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity,
   AsyncStorage
 } from 'react-native';
 

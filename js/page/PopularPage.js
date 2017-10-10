@@ -178,6 +178,7 @@ class PopularTab extends Component {
       component: RepositoryDetail,
       params: {
         projectModel: projectModel,
+        flag: FLAG_STORAGE.flag_popular,
         ...this.props
       }
     })

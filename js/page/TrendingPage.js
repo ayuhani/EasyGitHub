@@ -253,6 +253,7 @@ class TrendingTab extends Component {
       component: RepositoryDetail,
       params: {
         projectModel: projectModel,
+        flag: FLAG_STORAGE.flag_trending,
         ...this.props
       }
     })
