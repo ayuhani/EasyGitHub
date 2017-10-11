@@ -3510,9 +3510,9 @@ react-devtools-core@^2.5.0:
     shell-quote "^1.6.1"
     ws "^2.0.3"
 
-react-native-check-box@^2.0.1:
-  version "2.0.1"
-  resolved "http://registry.npm.taobao.org/react-native-check-box/download/react-native-check-box-2.0.1.tgz#3813fac9571fea3680498f94789e547dfc52d33a"
+react-native-check-box@^2.0.2:
+  version "2.0.2"
+  resolved "http://registry.npm.taobao.org/react-native-check-box/download/react-native-check-box-2.0.2.tgz#70e34a930833fa3c44f283f52e96f2b00b12316d"
   dependencies:
     prop-types "^15.5.7"
 

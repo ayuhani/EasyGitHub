@@ -20,19 +20,25 @@ export default class TrendingItem extends Component {
     };
   }
 
+  // 重绘
+  componentWillReceiveProps(nextProps) { // 当从当前页面切换走，再切换回来后
+    this.setFavoriteState(nextProps.projectModel.isFavorite);
+  }
+
+  // 按下收藏按钮触发的事件
+  onPressFavorite() {
+    let isFavorite = !this.state.isFavorite;
+    this.setFavoriteState(isFavorite); // 让当前按钮状态改变
+    this.props.projectModel.isFavorite = isFavorite; // 改变projectModel.isFavorite，进入详情就能传入最新值
+    this.props.onFavorite(this.props.projectModel.rowData, isFavorite);
+  }
+
   setFavoriteState(isFavorite) {
     this.setState({
       isFavorite: isFavorite,
       favoriteIcon: isFavorite ? require('../../res/images/ic_star.png')
           : require('../../res/images/ic_unstar_transparent.png')
     })
-  }
-
-  // 按下收藏按钮触发的事件
-  onPressFavorite() {
-    let isFavorite = !this.state.isFavorite;
-    this.setFavoriteState(isFavorite);
-    this.props.onFavorite(this.props.projectModel.rowData, isFavorite);
   }
 
   render() {

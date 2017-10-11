@@ -43,11 +43,11 @@ export default class PopularPage extends Component {
 
   componentDidMount() {
     // 组件挂载完成，加载本地的key
-    this.loadData();
+    this.loadLanguage();
   }
 
   // 加载数据
-  loadData() {
+  loadLanguage() {
     this.languageDao.fetch()
         .then(result => {
           this.setState({
@@ -161,8 +161,14 @@ class TrendingTab extends Component {
     };
   }
 
-  getUrl(category, timeSpan) {
-    return URL + category + '?' + timeSpan.searchText;
+  /**
+   * 拼接url
+   * @param path 语言类别
+   * @param timeSpan 今日 本周 本月
+   * @returns {string}
+   */
+  getUrl(path, timeSpan) {
+    return URL + path + '?' + timeSpan.searchText;
   }
 
   componentDidMount() {
@@ -254,6 +260,7 @@ class TrendingTab extends Component {
       params: {
         projectModel: projectModel,
         flag: FLAG_STORAGE.flag_trending,
+        onUpdateAfterFavorite: () => this.getFavoriteKeys(),
         ...this.props
       }
     })

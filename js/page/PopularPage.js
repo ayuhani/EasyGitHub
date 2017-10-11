@@ -196,6 +196,7 @@ class PopularTab extends Component {
       params: {
         projectModel: projectModel,
         flag: FLAG_STORAGE.flag_popular,
+        onUpdateAfterFavorite: () => this.getFavoriteKeys(),
         ...this.props
       }
     })

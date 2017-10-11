@@ -20,7 +20,7 @@ export default class PopularItem extends Component {
   }
 
   // 重绘
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) { // 当从当前页面切换走，再切换回来后
     this.setFavoriteState(nextProps.projectModel.isFavorite);
   }
 
@@ -28,11 +28,11 @@ export default class PopularItem extends Component {
   onPressFavorite() {
     let isFavorite = !this.state.isFavorite;
     this.setFavoriteState(isFavorite);
+    this.props.projectModel.isFavorite = isFavorite; // 这样更改之后，进入详情传过去的就是最新的数据
     this.props.onFavorite(this.props.projectModel.rowData, isFavorite);
   }
 
   setFavoriteState(isFavorite) {
-    this.props.projectModel.isFavorite = isFavorite;
     this.setState({
       isFavorite: isFavorite,
       favoriteIcon: isFavorite ? require('../../res/images/ic_star.png')

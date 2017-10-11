@@ -57,8 +57,13 @@ export default class RepositoryDetail extends Component {
     }
   }
 
+  componentWillUnmount() {
+    this.props.onUpdateAfterFavorite();
+  }
+
   setFavoriteState(isFavorite) {
-    this.props.projectModel.isFavorite = isFavorite;
+    // 这句话通知上一页的item要变化,这句话效果不好，不知道为什么
+    // this.props.projectModel.isFavorite = isFavorite;
     this.setState({
       isFavorite: isFavorite,
       favoriteIcon: isFavorite ? require('../../res/images/ic_star.png')
