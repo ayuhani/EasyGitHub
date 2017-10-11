@@ -101,7 +101,7 @@ class PopularTab extends Component {
     this.loadData();
   }
 
-  componentWillMount() {
+  componentWillUnmount() {
     if (this.listener) {
       this.listener.remove();
     }

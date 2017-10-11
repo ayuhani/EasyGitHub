@@ -172,12 +172,24 @@ class TrendingTab extends Component {
   }
 
   componentDidMount() {
-    this.loadData(this.props.timeSpan, true);
+    this.listener = DeviceEventEmitter.addListener('favoriteChanged_trending', () => {
+      this.isFavoriteChanged = true;
+    });
+    this.loadData(this.props.timeSpan);
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.timeSpan !== this.props.timeSpan) {
       this.loadData(nextProps.timeSpan);
+    } else if (this.isFavoriteChanged) {
+      this.isFavoriteChanged = false;
+      this.getFavoriteKeys();
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.listener) {
+      this.listener.remove();
     }
   }
 

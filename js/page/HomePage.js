@@ -13,10 +13,10 @@ import {
   DeviceEventEmitter
 } from 'react-native';
 import PopularPage from './PopularPage';
+import TrendingPage from './TrendingPage';
+import FavoritePage from './FavoritePage';
 import MyPage from './my/MyPage';
 import Toast, {DURATION} from 'react-native-easy-toast';
-import WebViewTest from '../../WebViewTest';
-import TrendingPage from './TrendingPage';
 
 export default class HomePage extends Component {
   constructor(props) {
@@ -56,7 +56,7 @@ export default class HomePage extends Component {
           <TabNavigator>
             {this.renderTab(PopularPage, 'tb_popular', require('../../res/images/ic_polular.png'), '最热')}
             {this.renderTab(TrendingPage, 'tb_trending', require('../../res/images/ic_trending.png'), '趋势')}
-            {this.renderTab(WebViewTest, 'tb_favorite', require('../../res/images/ic_favorite.png'), '收藏')}
+            {this.renderTab(FavoritePage, 'tb_favorite', require('../../res/images/ic_favorite.png'), '收藏')}
             {this.renderTab(MyPage, 'tb_my', require('../../res/images/ic_my.png'), '我的')}
           </TabNavigator>
           <Toast ref={toast => this.toast = toast}/>
