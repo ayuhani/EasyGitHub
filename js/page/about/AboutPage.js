@@ -2,7 +2,14 @@ import React, {Component} from 'react';
 import {
   StyleSheet,
   View,
+  Text,
+  ScrollView,
+  TouchableHighlight,
+  Image,
+  Dimensions,
+  Platform
 } from 'react-native';
+import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import ViewUtil from '../../util/ViewUtil';
 import GlobalStyle from '../../../res/styles/GlobalStyle';
 import {MORE_MENU} from '../../common/MoreMenu';
@@ -15,7 +22,25 @@ export default class AboutPage extends Component {
   }
 
   updateState(dic) {
-    this.setState(dic)
+    this.setState(dic);
+  }
+
+  onClick(tab) {
+    let TargetComponent, params = {...this.props, menuType: tab}
+    switch (tab) {
+      case MORE_MENU.website:
+        break;
+      case MORE_MENU.about_author:
+        break;
+      case MORE_MENU.feedback:
+        break;
+    }
+    if (TargetComponent) {
+      this.props.navigator.push({
+        component: TargetComponent,
+        params: params
+      })
+    }
   }
 
   getItem(tag, icon, text, rightIcon) {
@@ -43,8 +68,14 @@ export default class AboutPage extends Component {
   }
 }
 
+const window = Dimensions.get('window');
+
+const AVATAR_SIZE = 100;
+const PARALLAX_HEADER_HEIGHT = window.width * 0.7;
+const STICKY_HEADER_HEIGHT = 56;
+
 const styles = StyleSheet.create({
   tintColor: {
-    tintColor: '#2196f3'
+    tintColor: "#2196f3"
   }
-})
+});
