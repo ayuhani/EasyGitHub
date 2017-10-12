@@ -11,4 +11,6 @@ export const MORE_MENU = {
   about_author: 'About_Author',
   about: 'About',
   custom_theme: 'Custom Theme',
+  website: 'Website',
+  feedback: 'feedBack'
 }

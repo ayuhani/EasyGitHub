@@ -14,6 +14,7 @@ import {FLAG_LANGUAGE} from '../../expand/dao/LanguageDao';
 import {MORE_MENU} from "../../common/MoreMenu";
 import GlobalStyle from '../../../res/styles/GlobalStyle';
 import ViewUtil from '../../util/ViewUtil';
+import AboutPage from '../about/AboutPage';
 
 export default class MyPage extends Component {
 
@@ -46,6 +47,7 @@ export default class MyPage extends Component {
       case MORE_MENU.about_author:
         break;
       case MORE_MENU.about:
+        TargetComponent = AboutPage;
         break;
     }
     if (TargetComponent) {
