@@ -2,18 +2,13 @@ import React, {Component} from 'react';
 import {
   StyleSheet,
   View,
-  Text,
-  ScrollView,
-  TouchableHighlight,
-  Image,
-  Dimensions,
-  Platform
+  Linking
 } from 'react-native';
-import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import ViewUtil from '../../util/ViewUtil';
 import GlobalStyle from '../../../res/styles/GlobalStyle';
 import {MORE_MENU} from '../../common/MoreMenu';
 import AboutCommon, {FLAG_ABOUT} from './AboutCommon';
+import WebPage from '../WebPage';
 
 export default class AboutPage extends Component {
   constructor(props) {
@@ -29,10 +24,21 @@ export default class AboutPage extends Component {
     let TargetComponent, params = {...this.props, menuType: tab}
     switch (tab) {
       case MORE_MENU.website:
+        TargetComponent = WebPage;
+        params.url = 'http://www.devio.org/io/GitHubPopular/';
+        params.title = 'GitHub Popular';
         break;
       case MORE_MENU.about_author:
         break;
       case MORE_MENU.feedback:
+        var url = 'mailto://crazycodebo.gmail.com'
+        Linking.canOpenURL(url).then(supported => {
+          if (!supported) {
+            console.log('Can\'t handle url: ' + url);
+          } else {
+            return Linking.openURL(url);
+          }
+        }).catch(err => console.error('An error occurred', err));
         break;
     }
     if (TargetComponent) {
@@ -67,12 +73,6 @@ export default class AboutPage extends Component {
     }, contentView);
   }
 }
-
-const window = Dimensions.get('window');
-
-const AVATAR_SIZE = 100;
-const PARALLAX_HEADER_HEIGHT = window.width * 0.7;
-const STICKY_HEADER_HEIGHT = 56;
 
 const styles = StyleSheet.create({
   tintColor: {

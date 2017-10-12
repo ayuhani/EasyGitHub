@@ -97,6 +97,7 @@ export default class RepositoryDetail extends Component {
               source={{uri: this.url}}
               onNavigationStateChange={this.onNavigationStateChange}
               startInLoadingState={true}
+              javaScriptEnabled={true}
           />
         </View>
     );
