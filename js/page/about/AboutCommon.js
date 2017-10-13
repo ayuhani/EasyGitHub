@@ -15,13 +15,12 @@ import ProjectModel from '../../model/ProjectModel';
 import Utils from '../../util/Utils';
 import PopularItem from '../../common/PopularItem';
 import RepositoryDetail from '../../page/RepositoryDetail';
-import configs from '../../../res/data/config.json';
 import ReposiroryUtil from '../../expand/dao/RepositoryUtil';
 
 export var FLAG_ABOUT = {flag_about: 'about', flag_about_author: 'about_author'};
 
 export default class AboutCommon {
-  constructor(props, updateState, flag) {
+  constructor(props, updateState, flag, configs) {
     this.props = props;
     this.updateState = updateState;
     this.flag = flag;
@@ -29,18 +28,20 @@ export default class AboutCommon {
     this.favoriteKeys = null;
     this.favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_my);
     this.repositoryUtil = new ReposiroryUtil(this);
+    this.configs = configs;
   }
 
   loadData() {
     if (this.flag === FLAG_ABOUT.flag_about) {
       // 关于页面
-      this.repositoryUtil.fetchReposiroty(configs.info.currentRepoUrl);
+      console.log('一条数据')
+      this.repositoryUtil.fetchRepository(this.configs.info.currentRepoUrl);
     } else {
       // 关于作者
       var urls = [];
-      var items = configs.items;
+      var items = this.configs.items;
       for (let i = 0; i < items.length; i++) {
-        urls.push(configs.info.url + items[i]);
+        urls.push(this.configs.info.url + items[i]);
       }
       this.repositoryUtil.fetchRepositories(urls);
     }
@@ -131,7 +132,7 @@ export default class AboutCommon {
     config.renderBackground = () => (
         <View key="background">
           <Image source={{
-            uri: params.backgroundImage,
+            uri: params.backgroundImg,
             width: window.width,
             height: PARALLAX_HEADER_HEIGHT
           }}/>

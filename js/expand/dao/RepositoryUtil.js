@@ -28,7 +28,7 @@ export default class RepositoryUtil {
    * 获取指定url下的数据
    * @param url
    */
-  fetchReposiroty(url) {
+  fetchRepository(url) {
     this.dataRepository.fetchRepository(url)
         .then(result => {
           this.item = result && result.items ? result.items : result ? result : [];
@@ -53,7 +53,7 @@ export default class RepositoryUtil {
    */
   fetchRepositories(urls) {
     for (let i = 0; i < urls.length; i++) {
-      this.fetchReposiroty(urls[i]);
+      this.fetchRepository(urls[i]);
     }
   }
 }

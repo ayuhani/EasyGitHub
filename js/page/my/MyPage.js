@@ -15,6 +15,7 @@ import {MORE_MENU} from "../../common/MoreMenu";
 import GlobalStyle from '../../../res/styles/GlobalStyle';
 import ViewUtil from '../../util/ViewUtil';
 import AboutPage from '../about/AboutPage';
+import AboutAuthorPage from '../about/AboutAuthorPage';
 
 export default class MyPage extends Component {
 
@@ -45,6 +46,7 @@ export default class MyPage extends Component {
       case MORE_MENU.custom_theme:
         break;
       case MORE_MENU.about_author:
+        TargetComponent = AboutAuthorPage;
         break;
       case MORE_MENU.about:
         TargetComponent = AboutPage;
