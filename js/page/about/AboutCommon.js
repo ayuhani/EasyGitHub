@@ -9,6 +9,14 @@ import {
 } from 'react-native';
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import ViewUtil from '../../util/ViewUtil';
+import FavoriteDao from '../../expand/dao/FavoriteDao';
+import {FLAG_STORAGE} from "../../expand/dao/DataRepository";
+import ProjectModel from '../../model/ProjectModel';
+import Utils from '../../util/Utils';
+import PopularItem from '../../common/PopularItem';
+import RepositoryDetail from '../../page/RepositoryDetail';
+import configs from '../../../res/data/config.json';
+import ReposiroryUtil from '../../expand/dao/RepositoryUtil';
 
 export var FLAG_ABOUT = {flag_about: 'about', flag_about_author: 'about_author'};
 
@@ -17,6 +25,105 @@ export default class AboutCommon {
     this.props = props;
     this.updateState = updateState;
     this.flag = flag;
+    this.repositories = [];
+    this.favoriteKeys = null;
+    this.favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_my);
+    this.repositoryUtil = new ReposiroryUtil(this);
+  }
+
+  loadData() {
+    if (this.flag === FLAG_ABOUT.flag_about) {
+      // 关于页面
+      this.repositoryUtil.fetchReposiroty(configs.info.currentRepoUrl);
+    } else {
+      // 关于作者
+      var urls = [];
+      var items = configs.items;
+      for (let i = 0; i < items.length; i++) {
+        urls.push(configs.info.url + items[i]);
+      }
+      this.repositoryUtil.fetchRepositories(urls);
+    }
+  }
+
+  /**
+   * 通知数据发生改变
+   * @param items 改变的数据
+   */
+  onNotifyDataChanged(items) {
+    this.updateFavorite(items)
+  }
+
+  /**
+   * 更新项目的用户收藏状态
+   * @param repositories
+   */
+  async updateFavorite(repositories) {
+    if (!repositories) {
+      return;
+    }
+    this.repositories = repositories;
+    if (!this.favoriteKeys) {
+      this.favoriteKeys = await this.favoriteDao.getFavoriteKeys();
+    }
+    let projectModels = [];
+    let items = this.repositories;
+    for (let i = 0; i < items.length; i++) {
+      projectModels.push(new ProjectModel(items[i], Utils.checkFavorite(items[i],
+          this.favoriteKeys ? this.favoriteKeys : [])));
+    }
+    this.updateState({
+      projectModels: projectModels
+    })
+  }
+
+  /**
+   * 创建项目视图
+   * @param projectModels
+   * @returns {*}
+   */
+  renderRepository(projectModels) {
+    if (!projectModels || projectModels.length === 0) {
+      return null;
+    }
+    let views = [];
+    for (let i = 0; i < projectModels.length; i++) {
+      let projectModel = projectModels[i];
+      views.push(<PopularItem
+          key={projectModel.rowData.id}
+          projectModel={projectModel}
+          onItemClick={() => this.onItemClick(projectModel)}
+          onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
+      />);
+    }
+    return views;
+  }
+
+  // item的点击事件
+  onItemClick(projectModel) {
+    this.props.navigator.push({
+      component: RepositoryDetail,
+      params: {
+        projectModel: projectModel,
+        flag: FLAG_STORAGE.flag_my,
+        onUpdateAfterFavorite: () => {
+        },
+        ...this.props
+      }
+    })
+  }
+
+  /**
+   * favoriteIcon的单击回调函数
+   * @param item
+   * @param isFavorite
+   */
+  onFavorite(item, isFavorite) {
+    if (isFavorite) {
+      this.favoriteDao.saveFavoriteItem(item.id.toString(), JSON.stringify(item));
+    } else {
+      this.favoriteDao.removeFavoriteItem(item.id.toString());
+    }
   }
 
   getParallaxRenderConfig(params) {

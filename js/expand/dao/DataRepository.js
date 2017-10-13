@@ -3,7 +3,7 @@ import {
 } from 'react-native';
 import GitHubTrending from 'GitHubTrending';
 
-export var FLAG_STORAGE = {flag_popular: 'popular', flag_trending: 'trending'};
+export var FLAG_STORAGE = {flag_popular: 'popular', flag_trending: 'trending', flag_my: 'my'};
 
 export default class DataRepository {
 
@@ -78,19 +78,22 @@ export default class DataRepository {
                 reject(new Error('responseData is null'));
                 return;
               }
-              this.saveRepository(url, result);
               resolve(result);
+              this.saveRepository(url, result);
             })
       } else {
         fetch(url)
             .then(response => response.json())
             .then(result => {
-              if (!result || !result.items) {
+              if (this.flag === FLAG_STORAGE.flag_my && result) {// 关于
+                resolve(result);
+                this.saveRepository(url, result);
+              } else if (result && result.items) { //最热
+                resolve(result.items); // 直接网络获取返回的是个数组
+                this.saveRepository(url, result.items);
+              }else {
                 reject(new Error('responseData is null'));
-                return;
               }
-              resolve(result.items); // 直接网络获取返回的是个数组
-              this.saveRepository(url, result.items);
             })
             .catch(error => {
               reject(error);
@@ -110,23 +113,6 @@ export default class DataRepository {
     }
     let wrapData = {items: items, update_date: new Date().getTime()};
     AsyncStorage.setItem(url, JSON.stringify(wrapData), callBack);
-  }
-
-  /**
-   * 检查缓存是否过期，默认6个小时
-   * @param longTime
-   * @returns {boolean} true 没有过时
-   */
-  checkDate(longTime) {
-    // return false;
-    let cDate = new Date();
-    let tDate = new Date();
-    tDate.setTime(longTime);
-    if (cDate.getYear() !== tDate.getYear()) return false;
-    if (cDate.getMonth() !== tDate.getMonth()) return false;
-    if (cDate.getDay() !== tDate.getDay()) return false;
-    if (cDate.getHours() - tDate.getHours() > 6) return false;
-    return true;
   }
 
 }

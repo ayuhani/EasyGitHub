@@ -5,7 +5,6 @@ import {
   Text,
   TouchableOpacity,
   Image,
-  TextInput,
   ListView,
   RefreshControl,
   DeviceEventEmitter
@@ -242,7 +241,7 @@ class TrendingTab extends Component {
           this.items = result && result.items ? result.items : result ? result : [];
           this.getFavoriteKeys();
           if (result && result.update_date) {// 缓存
-            if (!dataRepository.checkDate(result.update_date)) {
+            if (!Utils.checkDate(result.update_date)) {
               DeviceEventEmitter.emit('showToast', '数据过时');
               return dataRepository.fetchNetRepository(url);
             } else {

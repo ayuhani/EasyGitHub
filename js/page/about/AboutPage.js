@@ -14,6 +14,13 @@ export default class AboutPage extends Component {
   constructor(props) {
     super(props);
     this.aboutCommon = new AboutCommon(props, (dic) => this.updateState(dic), FLAG_ABOUT.flag_about);
+    this.state = {
+      projectModels: []
+    };
+  }
+
+  componentDidMount() {
+    this.aboutCommon.loadData();
   }
 
   updateState(dic) {
@@ -55,6 +62,8 @@ export default class AboutPage extends Component {
 
   render() {
     let contentView = <View style={styles.container}>
+      {this.aboutCommon.renderRepository(this.state.projectModels)}
+      <View style={GlobalStyle.line}/>
       {this.getItem(MORE_MENU.website, require('../../../res/images/ic_computer.png'), '主页')}
       <View style={GlobalStyle.line}/>
       {this.getItem(MORE_MENU.about_author, require('../my/img/ic_insert_emoticon.png'), '关于作者')}

@@ -87,25 +87,33 @@ export default class MyPage extends Component {
             {/*趋势管理*/}
             <Text style={styles.groupTitle}>趋势管理</Text>
             <View style={GlobalStyle.line}/>
+            {/*自定义语言*/}
             {this.getItem(MORE_MENU.custom_language, require('./img/ic_custom_language.png'), '自定义语言')}
             <View style={GlobalStyle.line}/>
+            {/*语言排序*/}
             {this.getItem(MORE_MENU.sort_language, require('./img/ic_swap_vert.png'), '语言排序')}
             <View style={GlobalStyle.line}/>
+            {/*标签管理*/}
             <Text style={styles.groupTitle}>标签管理</Text>
             <View style={GlobalStyle.line}/>
+            {/*自定义标签*/}
             {this.getItem(MORE_MENU.custom_key, require('./img/ic_custom_language.png'), '自定义标签')}
             <View style={GlobalStyle.line}/>
+            {/*标签排序*/}
             {this.getItem(MORE_MENU.sort_key, require('./img/ic_swap_vert.png'), '标签排序')}
             <View style={GlobalStyle.line}/>
+            {/*移除标签*/}
             {this.getItem(MORE_MENU.remove_key, require('./img/ic_remove.png'), '移除标签')}
             <View style={GlobalStyle.line}/>
+            {/*设置*/}
             <Text style={styles.groupTitle}>设置</Text>
             <View style={GlobalStyle.line}/>
+            {/*自定义主题*/}
             {this.getItem(MORE_MENU.custom_theme, require('./img/ic_custom_theme.png'), '自定义主题')}
             <View style={GlobalStyle.line}/>
+            {/*关于作者*/}
             {this.getItem(MORE_MENU.about_author, require('./img/ic_insert_emoticon.png'), '关于作者')}
             <View style={GlobalStyle.line}/>
-            {this.getItem(MORE_MENU.about, require('./img/ic_insert_emoticon.png'), '关于')}
 
           </ScrollView>
         </View>
