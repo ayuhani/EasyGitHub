@@ -11,16 +11,17 @@ import {
   TextInput,
   TouchableOpacity
 } from 'react-native';
-import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view';
-import NavigationBar from '../common/NavigationBar';
 import {FLAG_STORAGE} from '../expand/dao/DataRepository';
 import PopularItem from '../common/PopularItem';
-import TrendingItem from '../common/TrendingItem';
-import RepositoryDetail from "./RepositoryDetail";
 import ProjectModel from "../model/ProjectModel";
 import FavoriteDao from '../expand/dao/FavoriteDao';
 import ActionUtil from '../util/ActionUtil';
+import Utils from '../util/Utils';
 import ViewUtil from '../util/ViewUtil';
+import Toast, {DURATION} from 'react-native-easy-toast';
+
+const API_URL = 'https://api.github.com/search/repositories?q=';
+const QUERY_STR = '&sort=stars';
 
 /**
  * 搜索
@@ -28,42 +29,80 @@ import ViewUtil from '../util/ViewUtil';
 export default class SearchPage extends Component {
   constructor(props) {
     super(props);
+    this.favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
     this.state = {
-      isSeaching: false
+      isLoading: false,
+      dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2,}),
+      favoriteKeys: []
     }
   }
 
-  /**
-   * favoriteIcon的单击回调函数
-   * @param item
-   * @param isFavorite
-   */
-  onFavorite(item, isFavorite) {
-    let key = item.id ? item.id.toString() : item.fullName;
-    if (isFavorite) {
-      this.favoriteDao.saveFavoriteItem(key, JSON.stringify(item));
-    } else {
-      this.favoriteDao.removeFavoriteItem(key);
-      if (this.props.flag === FLAG_STORAGE.flag_popular) {
-        DeviceEventEmitter.emit('favoriteChanged_popular');
-      } else {
-        DeviceEventEmitter.emit('favoriteChanged_trending');
-      }
+  getUrl(key) {
+    return API_URL + key + QUERY_STR;
+  }
+
+  loadData() {
+    this.updateState({
+      isLoading: true,
+    })
+    fetch(this.getUrl(this.inputKey))
+        .then(response => response.json())
+        .then(responseData => {
+          if (!this || !responseData || !responseData.items || responseData.items.length === 0) {
+            this.updateState({isLoading: false});
+            this.toast.show('未找到与' + this.inputKey + '相关的内容', DURATION.LENGTH_SHORT);
+            return;
+          }
+          this.items = responseData.items;
+          this.getFavoriteKeys();
+        })
+        .catch(e => {
+          this.updateState({isLoading: false})
+        })
+  }
+
+  // 获取收藏的列表
+  getFavoriteKeys() {
+    this.favoriteDao.getFavoriteKeys()
+        .then(keys => {
+          if (keys) {
+            this.updateState({
+              favoriteKeys: keys
+            })
+          }
+          this.flushFavoriteState();
+        })
+        .catch(e => {
+          this.flushFavoriteState();
+        })
+  }
+
+  flushFavoriteState() {
+    let projectModels = [];
+    let items = this.items;
+    for (let i = 0; i < items.length; i++) {
+      projectModels.push(new ProjectModel(items[i], Utils.checkFavorite(items[i], this.state.favoriteKeys)));
     }
+    this.updateState({
+      dataSource: this.state.dataSource.cloneWithRows(projectModels),
+      isLoading: false
+    })
   }
 
   renderRow(projectModel) {
-    let ItemComponent = this.props.flag === FLAG_STORAGE.flag_popular ? PopularItem : TrendingItem;
-    return <ItemComponent
-        key={this.props.flag === FLAG_STORAGE.flag_popular ? projectModel.rowData.id : projectModel.rowData.fullName}
+    return <PopularItem
+        key={projectModel.rowData.id}
         projectModel={projectModel}
         onItemClick={() => ActionUtil.onItemClick({
           projectModel: projectModel,
-          flag: this.props.flag,
+          flag: FLAG_STORAGE.flag_popular,
           onUpdateAfterFavorite: () => this.loadData(),
           ...this.props
         })}
-        onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
+        onFavorite={(item, isFavorite) => {
+          ActionUtil.onFavorite(this.favoriteDao, item, isFavorite);
+          DeviceEventEmitter.emit('favoriteChanged_popular');
+        }}
     />;
   }
 
@@ -72,9 +111,13 @@ export default class SearchPage extends Component {
   }
 
   onSearch() {
+    let isLoading = this.state.isLoading;
     this.updateState({
-      isSeaching: !this.state.isSeaching
+      isLoading: !isLoading
     })
+    if (!isLoading) {
+      this.loadData()
+    }
   }
 
   renderNavBar() {
@@ -86,6 +129,7 @@ export default class SearchPage extends Component {
         ref='input'
         style={styles.textInput}
         underlineColorAndroid={'white'}
+        onChangeText={text => this.inputKey = text}
     >
     </TextInput>;
     let rightButton = <TouchableOpacity
@@ -94,7 +138,7 @@ export default class SearchPage extends Component {
           this.onSearch();
         }}
     >
-      <Text style={styles.text}>{this.state.isSeaching ? '取消' : '搜索'}</Text>
+      <Text style={styles.text}>{this.state.isLoading ? '取消' : '搜索'}</Text>
     </TouchableOpacity>
     return <View style={[styles.navBar, styles.bgColor]}>
       {backButton}
@@ -110,21 +154,22 @@ export default class SearchPage extends Component {
     return <View style={{flex: 1}}>
       {statusBar}
       {this.renderNavBar()}
-      {/*<ListView*/}
-      {/*dataSource={this.state.dataSource}*/}
-      {/*renderRow={(rowData) => this.renderRow(rowData)}*/}
-      {/*enableEmptySections={true}*/}
-      {/*refreshControl={*/}
-      {/*<RefreshControl*/}
-      {/*refreshing={this.state.isLoading}*/}
-      {/*onRefresh={() => this.loadData()}*/}
-      {/*colors={['#2196f3']}*/}
-      {/*tintColor={'#2196f3'}*/}
-      {/*title='Loading...'*/}
-      {/*titleColor={'#2196f3'}*/}
-      {/*/>*/}
-      {/*}*/}
-      {/*/>*/}
+      <ListView
+          dataSource={this.state.dataSource}
+          renderRow={(rowData) => this.renderRow(rowData)}
+          enableEmptySections={true}
+          // refreshControl={
+          //   <RefreshControl
+          //       refreshing={this.state.isLoading}
+          //       onRefresh={() => this.loadData()}
+          //       colors={['#2196f3']}
+          //       tintColor={'#2196f3'}
+          //       title='Loading...'
+          //       titleColor={'#2196f3'}
+          //   />
+          // }
+      />
+      <Toast ref={toast => this.toast = toast}/>
     </View>
   }
 }

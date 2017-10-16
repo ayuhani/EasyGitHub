@@ -35,7 +35,6 @@ export default class AboutCommon {
   loadData() {
     if (this.flag === FLAG_ABOUT.flag_about) {
       // 关于页面
-      console.log('一条数据')
       this.repositoryUtil.fetchRepository(this.configs.info.currentRepoUrl);
     } else {
       // 关于作者
@@ -101,23 +100,10 @@ export default class AboutCommon {
             },
             ...this.props
           })}
-          onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
+          onFavorite={(item, isFavorite) => ActionUtil.onFavorite(this.favoriteDao, item, isFavorite)}
       />);
     }
     return views;
-  }
-
-  /**
-   * favoriteIcon的单击回调函数
-   * @param item
-   * @param isFavorite
-   */
-  onFavorite(item, isFavorite) {
-    if (isFavorite) {
-      this.favoriteDao.saveFavoriteItem(item.id.toString(), JSON.stringify(item));
-    } else {
-      this.favoriteDao.removeFavoriteItem(item.id.toString());
-    }
   }
 
   getParallaxRenderConfig(params) {

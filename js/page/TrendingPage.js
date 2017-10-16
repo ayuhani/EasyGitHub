@@ -14,7 +14,6 @@ import NavigationBar from '../common/NavigationBar';
 import DataRepository, {FLAG_STORAGE} from '../expand/dao/DataRepository';
 import TrendingItem from '../common/TrendingItem';
 import LanguageDao, {FLAG_LANGUAGE} from '../expand/dao/LanguageDao';
-import RepositoryDetail from "./RepositoryDetail";
 import Popover from '../common/Popover';
 import TimeSpan from '../model/TimeSpan';
 import ProjectModel from "../model/ProjectModel";
@@ -266,19 +265,6 @@ class TrendingTab extends Component {
         })
   }
 
-  /**
-   * favoriteIcon的单击回调函数
-   * @param item
-   * @param isFavorite
-   */
-  onFavorite(item, isFavorite) {
-    if (isFavorite) {
-      favoriteDao.saveFavoriteItem(item.fullName, JSON.stringify(item));
-    } else {
-      favoriteDao.removeFavoriteItem(item.fullName);
-    }
-  }
-
   // 渲染行
   renderRow(projectModel) {
     return <TrendingItem
@@ -290,7 +276,7 @@ class TrendingTab extends Component {
           onUpdateAfterFavorite: () => this.getFavoriteKeys(),
           ...this.props
         })}
-        onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
+        onFavorite={(item, isFavorite) => ActionUtil.onFavorite(favoriteDao, item, isFavorite)}
     />
   }
 

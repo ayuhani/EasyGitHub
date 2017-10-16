@@ -91,25 +91,6 @@ class FavoriteTab extends Component {
         })
   }
 
-  /**
-   * favoriteIcon的单击回调函数
-   * @param item
-   * @param isFavorite
-   */
-  onFavorite(item, isFavorite) {
-    let key = item.id ? item.id.toString() : item.fullName;
-    if (isFavorite) {
-      this.favoriteDao.saveFavoriteItem(key, JSON.stringify(item));
-    } else {
-      this.favoriteDao.removeFavoriteItem(key);
-      if (this.props.flag===FLAG_STORAGE.flag_popular){
-        DeviceEventEmitter.emit('favoriteChanged_popular');
-      }else {
-        DeviceEventEmitter.emit('favoriteChanged_trending');
-      }
-    }
-  }
-
   renderRow(projectModel) {
     let ItemComponent = this.props.flag === FLAG_STORAGE.flag_popular ? PopularItem : TrendingItem;
     return <ItemComponent
@@ -121,7 +102,14 @@ class FavoriteTab extends Component {
           onUpdateAfterFavorite: () => this.loadData(),
           ...this.props
         })}
-        onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
+        onFavorite={(item, isFavorite) => {
+          ActionUtil.onFavorite(this.favoriteDao, item, isFavorite);
+          if (this.props.flag === FLAG_STORAGE.flag_popular) {
+            DeviceEventEmitter.emit('favoriteChanged_popular');
+          } else {
+            DeviceEventEmitter.emit('favoriteChanged_trending');
+          }
+        }}
     />;
   }
 

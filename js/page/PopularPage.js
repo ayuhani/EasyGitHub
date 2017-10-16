@@ -54,21 +54,21 @@ export default class PopularPage extends Component {
 
   renderSearchButton() {
     return <TouchableOpacity
-          onPress={() => {
-            this.props.navigator.push({
-              component: SearchPage,
-              params: {
-                ...this.props
-              }
-            })
-          }}
-      >
-        <View>
-          <Image
-              style={{width: 24, height: 24, margin: 8}}
-              source={require('../../res/images/ic_search_white_48pt.png')}/>
-        </View>
-      </TouchableOpacity>;
+        onPress={() => {
+          this.props.navigator.push({
+            component: SearchPage,
+            params: {
+              ...this.props
+            }
+          })
+        }}
+    >
+      <View>
+        <Image
+            style={{width: 24, height: 24, margin: 8}}
+            source={require('../../res/images/ic_search_white_48pt.png')}/>
+      </View>
+    </TouchableOpacity>;
   }
 
   render() {
@@ -210,19 +210,6 @@ class PopularTab extends Component {
         })
   }
 
-  /**
-   * favoriteIcon的单击回调函数
-   * @param item
-   * @param isFavorite
-   */
-  onFavorite(item, isFavorite) {
-    if (isFavorite) {
-      favoriteDao.saveFavoriteItem(item.id.toString(), JSON.stringify(item));
-    } else {
-      favoriteDao.removeFavoriteItem(item.id.toString());
-    }
-  }
-
   renderRow(projectModel) {
     return <PopularItem
         key={projectModel.rowData.id}
@@ -233,7 +220,7 @@ class PopularTab extends Component {
           onUpdateAfterFavorite: () => this.getFavoriteKeys(),
           ...this.props
         })}
-        onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
+        onFavorite={(item, isFavorite) => ActionUtil.onFavorite(favoriteDao, item, isFavorite)}
     />
   }
 

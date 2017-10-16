@@ -12,10 +12,12 @@ import {
 import NavigationBar from '../common/NavigationBar';
 import ViewUtil from '../util/ViewUtil';
 import FavoriteDao from '../expand/dao/FavoriteDao';
+import ActionUtil from '../util/ActionUtil';
 
 const TRENDING_URL = 'https://www.github.com/';
 
 export default class RepositoryDetail extends Component {
+
   constructor(props) {
     super(props);
     this.url = this.props.projectModel.rowData.html_url ? this.props.projectModel.rowData.html_url : TRENDING_URL + this.props.projectModel.rowData.fullName;
@@ -38,8 +40,8 @@ export default class RepositoryDetail extends Component {
 
   goBack() {
     if (this.state.canGoBack) {
-      return;
       this.webView.goBack();
+      return;
     }
     this.props.navigator.pop();
   }
@@ -49,12 +51,7 @@ export default class RepositoryDetail extends Component {
     let item = this.props.projectModel.rowData;
     let isFavorite = !this.state.isFavorite;
     this.setFavoriteState(isFavorite);
-    let key = item.id ? item.id.toString() : item.fullName;
-    if (isFavorite) {
-      this.favoriteDao.saveFavoriteItem(key, JSON.stringify(item));
-    } else {
-      this.favoriteDao.removeFavoriteItem(key);
-    }
+    ActionUtil.onFavorite(this.favoriteDao, item, isFavorite);
   }
 
   componentWillUnmount() {

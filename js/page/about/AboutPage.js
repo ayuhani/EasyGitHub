@@ -5,6 +5,7 @@ import {
   Linking
 } from 'react-native';
 import ViewUtil from '../../util/ViewUtil';
+import ActionUtil from '../../util/ActionUtil';
 import GlobalStyle from '../../../res/styles/GlobalStyle';
 import {MORE_MENU} from '../../common/MoreMenu';
 import AboutCommon, {FLAG_ABOUT} from './AboutCommon';
