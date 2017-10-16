@@ -3,6 +3,7 @@ import {
   StyleSheet,
   View,
   Clipboard,
+  Linking
 } from 'react-native';
 import ViewUtil from '../../util/ViewUtil';
 import GlobalStyle from '../../../res/styles/GlobalStyle';
@@ -49,21 +50,35 @@ export default class AboutAuthorPage extends Component {
       case INFO.CONTACT:
         this.updateState({showContact: !this.state.showContact})
         break;
-
-
+      case INFO.BLOG.items.PERSONAL_BLOG:
+      case INFO.BLOG.items.CSDN:
+      case INFO.BLOG.items.JIANSHU:
+      case INFO.BLOG.items.GITHUB:
+        TargetComponent = WebPage;
+        params.url = tab.url;
+        params.title = tab.title;
+        break;
+      case INFO.QQ.items.MD:
+        Clipboard.setString(tab.account);
+        this.toast.show('群号：' + tab.account + " 已复制到剪切板", DURATION.LENGTH_LONG);
+        break;
+      case INFO.QQ.items.RN:
+        Clipboard.setString(tab.account);
+        this.toast.show('群号：' + tab.account + " 已复制到剪切板", DURATION.LENGTH_LONG);
+        break;
       case INFO.CONTACT.items.QQ:
         Clipboard.setString(tab.account);
         this.toast.show('QQ：' + tab.account + " 已复制到剪切板", DURATION.LENGTH_LONG);
         break;
-
-      case MORE_MENU.website:
-        TargetComponent = WebPage;
-        params.url = 'http://www.devio.org/io/GitHubPopular/';
-        params.title = 'GitHub Popular';
-        break;
-      case MORE_MENU.about_author:
-        break;
-      case MORE_MENU.feedback:
+      case INFO.CONTACT.items.Email:
+        let url = 'mailto:' + tab.account;
+        Linking.canOpenURL(url).then(supported => {
+          if (!supported) {
+            console.log('Can\'t handle url: ' + url);
+          } else {
+            return Linking.openURL(url);
+          }
+        }).catch(err => console.error('An error occurred', err));
         break;
     }
     if (TargetComponent) {

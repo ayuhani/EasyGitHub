@@ -2,12 +2,11 @@ import {AsyncStorage} from 'react-native';
 import DataRepository, {FLAG_STORAGE} from './DataRepository';
 import Utils from '../../util/Utils';
 
-var itemMap = new Map();
-
 export default class RepositoryUtil {
   constructor(aboutCommon) {
     this.aboutCommon = aboutCommon;
     this.dataRepository = new DataRepository(FLAG_STORAGE.flag_my);
+    this.itemMap = new Map();
   }
 
   /**
@@ -16,9 +15,9 @@ export default class RepositoryUtil {
    * @param v
    */
   updateData(k, v) {
-    itemMap.set(k, v);
+    this.itemMap.set(k, v);
     var arr = [];
-    for (var value of itemMap.values()) {
+    for (var value of this.itemMap.values()) {
       arr.push(value);
     }
     this.aboutCommon.onNotifyDataChanged(arr);

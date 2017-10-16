@@ -2,10 +2,6 @@ import React, {Component} from 'react';
 import {
   StyleSheet,
   View,
-  Text,
-  TouchableOpacity,
-  Image,
-  TextInput,
   ListView,
   RefreshControl,
   DeviceEventEmitter
@@ -18,6 +14,7 @@ import TrendingItem from '../common/TrendingItem';
 import RepositoryDetail from "./RepositoryDetail";
 import ProjectModel from "../model/ProjectModel";
 import FavoriteDao from '../expand/dao/FavoriteDao';
+import ActionUtil from '../util/ActionUtil';
 
 export default class FavoritePage extends Component {
   constructor(props) {
@@ -113,25 +110,17 @@ class FavoriteTab extends Component {
     }
   }
 
-  // item的点击事件
-  onItemClick(projectModel) {
-    this.props.navigator.push({
-      component: RepositoryDetail,
-      params: {
-        projectModel: projectModel,
-        flag: this.props.flag,
-        onUpdateAfterFavorite: () => this.loadData(),
-        ...this.props
-      }
-    })
-  }
-
   renderRow(projectModel) {
     let ItemComponent = this.props.flag === FLAG_STORAGE.flag_popular ? PopularItem : TrendingItem;
     return <ItemComponent
         key={this.props.flag === FLAG_STORAGE.flag_popular ? projectModel.rowData.id : projectModel.rowData.fullName}
         projectModel={projectModel}
-        onItemClick={() => this.onItemClick(projectModel)}
+        onItemClick={() => ActionUtil.onItemClick({
+          projectModel: projectModel,
+          flag: this.props.flag,
+          onUpdateAfterFavorite: () => this.loadData(),
+          ...this.props
+        })}
         onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
     />;
   }

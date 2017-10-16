@@ -10,6 +10,7 @@ import {MORE_MENU} from '../../common/MoreMenu';
 import AboutCommon, {FLAG_ABOUT} from './AboutCommon';
 import WebPage from '../WebPage';
 import configs from '../../../res/data/config.json';
+import AboutAuthorPage from './AboutAuthorPage';
 
 export default class AboutPage extends Component {
   constructor(props) {
@@ -37,6 +38,7 @@ export default class AboutPage extends Component {
         params.title = 'GitHub Popular';
         break;
       case MORE_MENU.about_author:
+        TargetComponent = AboutAuthorPage;
         break;
       case MORE_MENU.feedback:
         var url = 'mailto:crazycodebo@gmail.com'

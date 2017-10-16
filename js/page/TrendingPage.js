@@ -20,6 +20,8 @@ import TimeSpan from '../model/TimeSpan';
 import ProjectModel from "../model/ProjectModel";
 import FavoriteDao from '../expand/dao/FavoriteDao';
 import Utils from '../util/Utils';
+import ActionUtil from '../util/ActionUtil';
+
 
 const URL = 'https://github.com/trending/';
 const timeSpanArray = [new TimeSpan('本 日', 'since=daily'),
@@ -264,19 +266,6 @@ class TrendingTab extends Component {
         })
   }
 
-  // item的点击事件
-  onItemClick(projectModel) {
-    this.props.navigator.push({
-      component: RepositoryDetail,
-      params: {
-        projectModel: projectModel,
-        flag: FLAG_STORAGE.flag_trending,
-        onUpdateAfterFavorite: () => this.getFavoriteKeys(),
-        ...this.props
-      }
-    })
-  }
-
   /**
    * favoriteIcon的单击回调函数
    * @param item
@@ -295,7 +284,12 @@ class TrendingTab extends Component {
     return <TrendingItem
         key={projectModel.rowData.fullName}
         projectModel={projectModel}
-        onItemClick={() => this.onItemClick(projectModel)}
+        onItemClick={() => ActionUtil.onItemClick({
+          projectModel: projectModel,
+          flag: FLAG_STORAGE.flag_trending,
+          onUpdateAfterFavorite: () => this.getFavoriteKeys(),
+          ...this.props
+        })}
         onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
     />
   }

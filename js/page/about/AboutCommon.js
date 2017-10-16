@@ -16,6 +16,7 @@ import Utils from '../../util/Utils';
 import PopularItem from '../../common/PopularItem';
 import RepositoryDetail from '../../page/RepositoryDetail';
 import ReposiroryUtil from '../../expand/dao/RepositoryUtil';
+import ActionUtil from '../../util/ActionUtil';
 
 export var FLAG_ABOUT = {flag_about: 'about', flag_about_author: 'about_author'};
 
@@ -93,25 +94,17 @@ export default class AboutCommon {
       views.push(<PopularItem
           key={projectModel.rowData.id}
           projectModel={projectModel}
-          onItemClick={() => this.onItemClick(projectModel)}
+          onItemClick={() => ActionUtil.onItemClick({
+            projectModel: projectModel,
+            flag: FLAG_STORAGE.flag_my,
+            onUpdateAfterFavorite: () => {
+            },
+            ...this.props
+          })}
           onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
       />);
     }
     return views;
-  }
-
-  // item的点击事件
-  onItemClick(projectModel) {
-    this.props.navigator.push({
-      component: RepositoryDetail,
-      params: {
-        projectModel: projectModel,
-        flag: FLAG_STORAGE.flag_my,
-        onUpdateAfterFavorite: () => {
-        },
-        ...this.props
-      }
-    })
   }
 
   /**
