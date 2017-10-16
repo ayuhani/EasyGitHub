@@ -9,7 +9,9 @@ import {
   Platform,
   StatusBar,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  ActivityIndicator,
+  Dimensions
 } from 'react-native';
 import {FLAG_STORAGE} from '../expand/dao/DataRepository';
 import PopularItem from '../common/PopularItem';
@@ -19,6 +21,7 @@ import ActionUtil from '../util/ActionUtil';
 import Utils from '../util/Utils';
 import ViewUtil from '../util/ViewUtil';
 import Toast, {DURATION} from 'react-native-easy-toast';
+import GlobalStyle from '../../res/styles/GlobalStyle';
 
 const API_URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
@@ -33,7 +36,8 @@ export default class SearchPage extends Component {
     this.state = {
       isLoading: false,
       dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2,}),
-      favoriteKeys: []
+      favoriteKeys: [],
+      showBottomButton: false,
     }
   }
 
@@ -49,15 +53,16 @@ export default class SearchPage extends Component {
         .then(response => response.json())
         .then(responseData => {
           if (!this || !responseData || !responseData.items || responseData.items.length === 0) {
-            this.updateState({isLoading: false});
+            this.updateState({isLoading: false, showBottomButton: false});
             this.toast.show('未找到与' + this.inputKey + '相关的内容', DURATION.LENGTH_SHORT);
             return;
           }
           this.items = responseData.items;
           this.getFavoriteKeys();
+          this.updateState({showBottomButton: true})
         })
         .catch(e => {
-          this.updateState({isLoading: false})
+          this.updateState({isLoading: false, showBottomButton: false})
         })
   }
 
@@ -139,7 +144,7 @@ export default class SearchPage extends Component {
         }}
     >
       <Text style={styles.text}>{this.state.isLoading ? '取消' : '搜索'}</Text>
-    </TouchableOpacity>
+    </TouchableOpacity>;
     return <View style={[styles.navBar, styles.bgColor]}>
       {backButton}
       {inputView}
@@ -151,24 +156,27 @@ export default class SearchPage extends Component {
     let statusBar = Platform.OS === 'ios' ? <View>
       <StatusBar/>
     </View> : null;
+    let bottomView = this.state.showBottomButton ?
+        <TouchableOpacity style={[styles.bottmButton, styles.bgColor]}>
+          <Text style={styles.text}>添加标签</Text>
+        </TouchableOpacity> : null;
     return <View style={{flex: 1}}>
       {statusBar}
       {this.renderNavBar()}
-      <ListView
-          dataSource={this.state.dataSource}
-          renderRow={(rowData) => this.renderRow(rowData)}
-          enableEmptySections={true}
-          // refreshControl={
-          //   <RefreshControl
-          //       refreshing={this.state.isLoading}
-          //       onRefresh={() => this.loadData()}
-          //       colors={['#2196f3']}
-          //       tintColor={'#2196f3'}
-          //       title='Loading...'
-          //       titleColor={'#2196f3'}
-          //   />
-          // }
-      />
+      <View style={{flex: 1}}>
+        <ListView
+            dataSource={this.state.dataSource}
+            renderRow={(rowData) => this.renderRow(rowData)}
+            enableEmptySections={true}
+        />
+        {this.state.isLoading && <ActivityIndicator
+            style={styles.indicator}
+            animating={this.state.isLoading}
+            color='#2196f3'
+            size={'large'}
+        />}
+      </View>
+      {bottomView}
       <Toast ref={toast => this.toast = toast}/>
     </View>
   }
@@ -202,5 +210,23 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     opacity: 0.7,
     color: 'white'
+  },
+  indicator: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    right: 0,
+    bottom: 0
+  },
+  bottmButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 48,
+    opacity: 0.95,
+    position: 'absolute',
+    left: 10,
+    top: GlobalStyle.window_height - 83,
+    right: 10,
+    bottom: 10
   }
 })
