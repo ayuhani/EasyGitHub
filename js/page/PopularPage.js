@@ -4,7 +4,9 @@ import {
   View,
   ListView,
   RefreshControl,
-  DeviceEventEmitter
+  DeviceEventEmitter,
+  TouchableOpacity,
+  Image
 } from 'react-native';
 import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view';
 import NavigationBar from '../common/NavigationBar';
@@ -16,6 +18,7 @@ import ProjectModel from "../model/ProjectModel";
 import FavoriteDao from '../expand/dao/FavoriteDao';
 import Utils from '../util/Utils';
 import ActionUtil from '../util/ActionUtil';
+import SearchPage from './SearchPage';
 
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
@@ -49,6 +52,25 @@ export default class PopularPage extends Component {
         })
   }
 
+  renderSearchButton() {
+    return <TouchableOpacity
+          onPress={() => {
+            this.props.navigator.push({
+              component: SearchPage,
+              params: {
+                ...this.props
+              }
+            })
+          }}
+      >
+        <View>
+          <Image
+              style={{width: 24, height: 24, margin: 8}}
+              source={require('../../res/images/ic_search_white_48pt.png')}/>
+        </View>
+      </TouchableOpacity>;
+  }
+
   render() {
     let content = this.state.languages.length > 0 ? <ScrollableTabView
         renderTabBar={() => <ScrollableTabBar/>}
@@ -66,7 +88,9 @@ export default class PopularPage extends Component {
     return (
         <View style={styles.container}>
           <NavigationBar
+              leftButton={<View></View>}
               title={'最热'}
+              rightButton={this.renderSearchButton()}
           />
           {content}
         </View>
