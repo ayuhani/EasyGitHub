@@ -16,27 +16,54 @@ import ProjectModel from "../model/ProjectModel";
 import FavoriteDao from '../expand/dao/FavoriteDao';
 import ActionUtil from '../util/ActionUtil';
 import makeCancelable from '../util/Cancelable';
+import ViewUtil from '../util/ViewUtil';
+import MoreMenu, {MORE_MENU} from '../common/MoreMenu';
+import {FLAG_TAB} from './HomePage';
 
 export default class FavoritePage extends Component {
   constructor(props) {
     super(props);
   }
 
+  renderRightButton() {
+    return <View style={{flexDirection: 'row', alignItems: 'center'}}>
+      {ViewUtil.getMoreButton(() => {
+        this.refs.moreMenu.open();
+      })}
+    </View>;
+  }
+
+  renderMoreView() {
+    let params = {...this.props, fromPage: FLAG_TAB.TB_FAVORITE};
+    return <MoreMenu
+        ref="moreMenu"
+        {...params}
+        menus={[
+          MORE_MENU.custom_theme,
+          MORE_MENU.about_author,
+          MORE_MENU.about]}
+        anchorView={this.refs.moreMenuButton}/>
+  }
+
   render() {
+    let content = <ScrollableTabView
+        renderTabBar={() => <ScrollableTabBar/>}
+        tabBarBackgroundColor="#2196f3"
+        tabBarActiveTextColor="white"
+        tabBarInactiveTextColor="mintcream"
+        tabBarUnderlineStyle={{backgroundColor: 'white', height: 2}}>
+      <FavoriteTab tabLabel='最热' flag={FLAG_STORAGE.flag_popular} {...this.props}></FavoriteTab>
+      <FavoriteTab tabLabel='趋势' flag={FLAG_STORAGE.flag_trending} {...this.props}></FavoriteTab>
+    </ScrollableTabView>;
     return (
         <View style={styles.container}>
           <NavigationBar
+              leftButton={<View></View>}
               title={'收藏'}
+              rightButton={this.renderRightButton()}
           />
-          <ScrollableTabView
-              renderTabBar={() => <ScrollableTabBar/>}
-              tabBarBackgroundColor="#2196f3"
-              tabBarActiveTextColor="white"
-              tabBarInactiveTextColor="mintcream"
-              tabBarUnderlineStyle={{backgroundColor: 'white', height: 2}}>
-            <FavoriteTab tabLabel='最热' flag={FLAG_STORAGE.flag_popular} {...this.props}></FavoriteTab>
-            <FavoriteTab tabLabel='趋势' flag={FLAG_STORAGE.flag_trending} {...this.props}></FavoriteTab>
-          </ScrollableTabView>
+          {content}
+          {this.renderMoreView()}
         </View>
     );
   }

@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
-  Alert
+  Alert,
+  DeviceEventEmitter
 } from 'react-native';
 import NavigationBar from '../../common/NavigationBar';
 import ViewUtil from '../../util/ViewUtil';
@@ -14,6 +15,7 @@ import ArrayUtil from '../../util/ArrayUtil';
 import LanuageDao, {FLAG_LANGUAGE} from '../../expand/dao/LanguageDao';
 import CheckBox from 'react-native-check-box';
 import makeCancelable from '../../util/Cancelable';
+import {ACTION_HOME, FLAG_TAB} from '../HomePage';
 
 export default class CustomKeyPage extends Component {
   constructor(props) {
@@ -121,8 +123,9 @@ export default class CustomKeyPage extends Component {
     }
     this.languageDao.save(this.state.dataArray);
     this.props.navigator.pop();
+    let jumpToTab = this.props.flag === FLAG_LANGUAGE.flag_key ? FLAG_TAB.TB_POPULAR : FLAG_TAB.TB_TRENDING;
     // 通知首页重启
-
+    DeviceEventEmitter.emit(ACTION_HOME.FlAG, ACTION_HOME.RESTART, {jumpToTab: jumpToTab});
   }
 
   // 点击返回按钮

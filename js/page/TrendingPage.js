@@ -22,6 +22,9 @@ import Utils from '../util/Utils';
 import ActionUtil from '../util/ActionUtil';
 import {ACTION_HOME} from './HomePage';
 import makeCancelable from '../util/Cancelable';
+import ViewUtil from '../util/ViewUtil';
+import MoreMenu, {MORE_MENU} from '../common/MoreMenu';
+import {FLAG_TAB} from './HomePage';
 
 
 const URL = 'https://github.com/trending/';
@@ -103,6 +106,28 @@ export default class PopularPage extends Component {
     })
   }
 
+  renderRightButton() {
+    return <View style={{flexDirection: 'row', alignItems: 'center'}}>
+      {ViewUtil.getMoreButton(() => {
+        this.refs.moreMenu.open();
+      })}
+    </View>;
+  }
+
+  renderMoreView() {
+    let params = {...this.props, fromPage: FLAG_TAB.TB_TRENDING};
+    return <MoreMenu
+        ref="moreMenu"
+        {...params}
+        menus={[
+          MORE_MENU.custom_language,
+          MORE_MENU.sort_language,
+          MORE_MENU.custom_theme,
+          MORE_MENU.about_author,
+          MORE_MENU.about]}
+        anchorView={this.refs.moreMenuButton}/>
+  }
+
   render() {
     let content = this.state.languages.length > 0 ? <ScrollableTabView
         renderTabBar={() => <ScrollableTabBar/>}
@@ -142,10 +167,13 @@ export default class PopularPage extends Component {
     return (
         <View style={styles.container}>
           <NavigationBar
+              leftButton={<View></View>}
               titleView={this.renderTitleView()}
+              rightButton={this.renderRightButton()}
           />
           {content}
           {timeSpanView}
+          {this.renderMoreView()}
         </View>
     );
   }

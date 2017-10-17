@@ -6,7 +6,8 @@ import {
   View,
   Text,
   Image,
-  Alert
+  Alert,
+  DeviceEventEmitter
 } from 'react-native';
 import NavigationBar from '../../common/NavigationBar';
 import LanguageDao, {FLAG_LANGUAGE} from '../../expand/dao/LanguageDao';
@@ -14,6 +15,7 @@ import ArrayUtil from '../../util/ArrayUtil';
 import ViewUtil from '../../util/ViewUtil';
 import SortableListView from 'react-native-sortable-listview';
 import makeCancelable from '../../util/Cancelable';
+import {ACTION_HOME, FLAG_TAB} from '../HomePage';
 
 export default class SortKeyPage extends Component {
 
@@ -96,6 +98,9 @@ export default class SortKeyPage extends Component {
     this.getSortResult();
     this.languageDao.save(this.sortResultArray);
     this.props.navigator.pop();
+    let jumpToTab = this.props.flag === FLAG_LANGUAGE.flag_key ? FLAG_TAB.TB_POPULAR : FLAG_TAB.TB_TRENDING;
+    // 通知首页重启
+    DeviceEventEmitter.emit(ACTION_HOME.FlAG, ACTION_HOME.RESTART, {jumpToTab: jumpToTab});
   }
 
   // 获取最终排好序的所有key数组
