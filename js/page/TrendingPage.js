@@ -20,6 +20,7 @@ import ProjectModel from "../model/ProjectModel";
 import FavoriteDao from '../expand/dao/FavoriteDao';
 import Utils from '../util/Utils';
 import ActionUtil from '../util/ActionUtil';
+import {ACTION_HOME} from './HomePage';
 
 
 const URL = 'https://github.com/trending/';
@@ -243,13 +244,13 @@ class TrendingTab extends Component {
           this.getFavoriteKeys();
           if (result && result.update_date) {// 缓存
             if (!Utils.checkDate(result.update_date)) {
-              DeviceEventEmitter.emit('showToast', '数据过时');
+              DeviceEventEmitter.emit(ACTION_HOME.FlAG, ACTION_HOME.SHOW_TOAST, {text: '数据过时'});
               return dataRepository.fetchNetRepository(url);
             } else {
-              DeviceEventEmitter.emit('showToast', '显示缓存数据');
+              DeviceEventEmitter.emit(ACTION_HOME.FlAG, ACTION_HOME.SHOW_TOAST, {text: '显示缓存数据'});
             }
           } else {
-            DeviceEventEmitter.emit('showToast', '显示网络数据');
+            DeviceEventEmitter.emit(ACTION_HOME.FlAG, ACTION_HOME.SHOW_TOAST, {text: '显示网络数据'});
           }
         })
         .then(items => {
@@ -258,7 +259,7 @@ class TrendingTab extends Component {
           }
           this.items = items;
           this.getFavoriteKeys();
-          DeviceEventEmitter.emit('showToast', '显示网络数据');
+          DeviceEventEmitter.emit(ACTION_HOME.FlAG, ACTION_HOME.SHOW_TOAST, {text: '显示网络数据'});
         })
         .catch(error => {
           console.log(error);

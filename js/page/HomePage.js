@@ -18,17 +18,50 @@ import FavoritePage from './FavoritePage';
 import MyPage from './my/MyPage';
 import Toast, {DURATION} from 'react-native-easy-toast';
 
+export const ACTION_HOME = {FlAG: 'action_home', SHOW_TOAST: 'showToast', RESTART: 'restart'};
+export const FLAG_TAB = {
+  TB_POPULAR: 'tb_popular',
+  TB_TRENDING: 'tb_trending',
+  TB_FAVORITE: 'tb_favorite',
+  TB_MY: 'tb_my'
+};
+
 export default class HomePage extends Component {
   constructor(props) {
     super(props);
+    let selectedTab = this.props.selectedTab ? this.props.selectedTab : FLAG_TAB.TB_POPULAR;
     this.state = {
-      selectedTab: 'tb_popular',
+      selectedTab: selectedTab,
     };
   }
 
   componentDidMount() {
-    this.listener = DeviceEventEmitter.addListener('showToast', (text) => {
-      this.toast.show(text, DURATION.LENGTH_SHORT);
+    this.listener = DeviceEventEmitter.addListener(ACTION_HOME.FlAG, (action, params) => this.onAction(action, params));
+  }
+
+  /**
+   * 通知事件回调处理
+   * @param action
+   * @param params
+   */
+  onAction(action, params) {
+    switch (action) {
+      case ACTION_HOME.SHOW_TOAST:
+        this.toast.show(params.text, DURATION.LENGTH_SHORT);
+        break;
+      case ACTION_HOME.RESTART:
+        this.onRestart(params.jumpToTab);
+        break;
+    }
+  }
+
+  onRestart(jumpToTab) {
+    this.props.navigator.resetTo({
+      component: HomePage,
+      params: {
+        ...this.props,
+        selectedTab: jumpToTab
+      }
     })
   }
 
@@ -54,10 +87,10 @@ export default class HomePage extends Component {
     return (
         <View style={styles.container}>
           <TabNavigator>
-            {this.renderTab(PopularPage, 'tb_popular', require('../../res/images/ic_polular.png'), '最热')}
-            {this.renderTab(TrendingPage, 'tb_trending', require('../../res/images/ic_trending.png'), '趋势')}
-            {this.renderTab(FavoritePage, 'tb_favorite', require('../../res/images/ic_favorite.png'), '收藏')}
-            {this.renderTab(MyPage, 'tb_my', require('../../res/images/ic_my.png'), '我的')}
+            {this.renderTab(PopularPage, FLAG_TAB.TB_POPULAR, require('../../res/images/ic_polular.png'), '最热')}
+            {this.renderTab(TrendingPage, FLAG_TAB.TB_TRENDING, require('../../res/images/ic_trending.png'), '趋势')}
+            {this.renderTab(FavoritePage, FLAG_TAB.TB_FAVORITE, require('../../res/images/ic_favorite.png'), '收藏')}
+            {this.renderTab(MyPage, FLAG_TAB.TB_MY, require('../../res/images/ic_my.png'), '我的')}
           </TabNavigator>
           <Toast ref={toast => this.toast = toast}/>
         </View>

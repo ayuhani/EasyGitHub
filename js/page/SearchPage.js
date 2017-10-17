@@ -21,6 +21,7 @@ import ViewUtil from '../util/ViewUtil';
 import Toast, {DURATION} from 'react-native-easy-toast';
 import GlobalStyle from '../../res/styles/GlobalStyle';
 import LanguageDao, {FLAG_LANGUAGE} from '../expand/dao/LanguageDao';
+import {ACTION_HOME, FLAG_TAB} from './HomePage';
 
 const API_URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
@@ -34,6 +35,7 @@ export default class SearchPage extends Component {
     this.favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
     this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key);
     this.keys = [];
+    this.isKeyChanged = false;
     this.state = {
       isLoading: false,
       dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2,}),
@@ -45,6 +47,13 @@ export default class SearchPage extends Component {
   // 读取所有标签，用来判断是否显示添加标签
   componentDidMount() {
     this.initKeys();
+  }
+
+  // 当用户添加了新的标签后才发送通知
+  componentWillUnmount() {
+    if (this.isKeyChanged) {
+      DeviceEventEmitter.emit(ACTION_HOME.FlAG, ACTION_HOME.RESTART, {jumpToTab: FLAG_TAB.TB_POPULAR});
+    }
   }
 
   async initKeys() {
@@ -166,6 +175,7 @@ export default class SearchPage extends Component {
     this.keys.unshift(key);
     this.languageDao.save(this.keys);
     this.toast.show('添加成功', DURATION.LENGTH_SHORT);
+    this.isKeyChanged = true;
   }
 
   renderNavBar() {
