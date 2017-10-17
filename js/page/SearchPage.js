@@ -4,14 +4,12 @@ import {
   View,
   Text,
   ListView,
-  RefreshControl,
   DeviceEventEmitter,
   Platform,
   StatusBar,
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
-  Dimensions
 } from 'react-native';
 import {FLAG_STORAGE} from '../expand/dao/DataRepository';
 import PopularItem from '../common/PopularItem';
@@ -22,6 +20,7 @@ import Utils from '../util/Utils';
 import ViewUtil from '../util/ViewUtil';
 import Toast, {DURATION} from 'react-native-easy-toast';
 import GlobalStyle from '../../res/styles/GlobalStyle';
+import LanguageDao, {FLAG_LANGUAGE} from '../expand/dao/LanguageDao';
 
 const API_URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
@@ -33,12 +32,37 @@ export default class SearchPage extends Component {
   constructor(props) {
     super(props);
     this.favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
+    this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key);
+    this.keys = [];
     this.state = {
       isLoading: false,
       dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2,}),
       favoriteKeys: [],
       showBottomButton: false,
     }
+  }
+
+  // 读取所有标签，用来判断是否显示添加标签
+  componentDidMount() {
+    this.initKeys();
+  }
+
+  async initKeys() {
+    this.keys = await this.languageDao.fetch();
+  }
+
+  /**
+   * 检查key是否存在于keys中
+   * @param keys
+   * @param key
+   */
+  checkKeyIsExist(keys, key) {
+    for (let i = 0; i < keys.length; i++) {
+      if (key.toLowerCase() === keys[i].name.toLowerCase()) {
+        return true;
+      }
+    }
+    return false;
   }
 
   getUrl(key) {
@@ -59,7 +83,9 @@ export default class SearchPage extends Component {
           }
           this.items = responseData.items;
           this.getFavoriteKeys();
-          this.updateState({showBottomButton: true})
+          if (!this.checkKeyIsExist(this.keys, this.inputKey)) {
+            this.updateState({showBottomButton: true})
+          }
         })
         .catch(e => {
           this.updateState({isLoading: false, showBottomButton: false})
@@ -125,6 +151,23 @@ export default class SearchPage extends Component {
     }
   }
 
+  // 保存标签
+  saveKey() {
+    let key = this.inputKey;
+    if (this.checkKeyIsExist(this.keys, key)) {
+      this.toast.show(key + '标签已经存在', DURATION.LENGTH_SHORT);
+      return;
+    }
+    key = {
+      "path": key,
+      "name": key,
+      "checked": true
+    };
+    this.keys.unshift(key);
+    this.languageDao.save(this.keys);
+    this.toast.show('添加成功', DURATION.LENGTH_SHORT);
+  }
+
   renderNavBar() {
     let backButton = ViewUtil.getLeftButton(() => {
       this.refs.input.blur();
@@ -157,7 +200,9 @@ export default class SearchPage extends Component {
       <StatusBar/>
     </View> : null;
     let bottomView = this.state.showBottomButton ?
-        <TouchableOpacity style={[styles.bottmButton, styles.bgColor]}>
+        <TouchableOpacity
+            style={[styles.bottmButton, styles.bgColor]}
+            onPress={() => this.saveKey()}>
           <Text style={styles.text}>添加标签</Text>
         </TouchableOpacity> : null;
     return <View style={{flex: 1}}>
@@ -227,6 +272,7 @@ const styles = StyleSheet.create({
     left: 10,
     top: GlobalStyle.window_height - 83,
     right: 10,
-    bottom: 10
+    bottom: 10,
+    borderRadius: 3,
   }
 })
