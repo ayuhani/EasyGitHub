@@ -13,6 +13,7 @@ import ViewUtil from '../../util/ViewUtil';
 import ArrayUtil from '../../util/ArrayUtil';
 import LanuageDao, {FLAG_LANGUAGE} from '../../expand/dao/LanguageDao';
 import CheckBox from 'react-native-check-box';
+import makeCancelable from '../../util/Cancelable';
 
 export default class CustomKeyPage extends Component {
   constructor(props) {
@@ -30,9 +31,14 @@ export default class CustomKeyPage extends Component {
     this.loadData();
   }
 
+  componentWillUnmount() {
+    this.cancelable && this.cancelable.cancel();
+  }
+
   // 加载数据，
   loadData() {
-    this.languageDao.fetch()
+    this.cancelable = makeCancelable(this.languageDao.fetch());
+    this.cancelable.promise
         .then(result => {
           this.setState({
             dataArray: result // 得到的是json格式数组对象
@@ -140,7 +146,7 @@ export default class CustomKeyPage extends Component {
 
   render() {
     let title = this.isRemoveKey ? '移除标签' : '自定义标签';
-    title = this.props.flag === FLAG_LANGUAGE.flag_language ? '自定义语言': title;
+    title = this.props.flag === FLAG_LANGUAGE.flag_language ? '自定义语言' : title;
     let rightButtonTitle = this.isRemoveKey ? '移除' : '保存';
     let rightButton = <TouchableOpacity
         onPress={() => {

@@ -20,6 +20,7 @@ import Utils from '../util/Utils';
 import ActionUtil from '../util/ActionUtil';
 import SearchPage from './SearchPage';
 import {ACTION_HOME} from './HomePage';
+import makeCancelable from '../util/Cancelable';
 
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
@@ -127,6 +128,7 @@ class PopularTab extends Component {
     if (this.listener) {
       this.listener.remove();
     }
+    this.cancelable && this.cancelable.cancel();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -177,8 +179,8 @@ class PopularTab extends Component {
       isLoading: true
     });
     let url = this.getUrl(this.props.path);
-    dataRepository
-        .fetchRepository(url)
+    this.cancelable = makeCancelable(dataRepository.fetchRepository(url));
+    this.cancelable.promise
         .then(result => {
           // 本地获取的是个object
           // 直接网络获取返回的是个数组

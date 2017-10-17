@@ -21,6 +21,7 @@ import FavoriteDao from '../expand/dao/FavoriteDao';
 import Utils from '../util/Utils';
 import ActionUtil from '../util/ActionUtil';
 import {ACTION_HOME} from './HomePage';
+import makeCancelable from '../util/Cancelable';
 
 
 const URL = 'https://github.com/trending/';
@@ -192,6 +193,7 @@ class TrendingTab extends Component {
     if (this.listener) {
       this.listener.remove();
     }
+    this.cancelable && this.cancelable.cancel();
   }
 
   /**
@@ -235,8 +237,8 @@ class TrendingTab extends Component {
       isLoading: true
     });
     let url = this.getUrl(this.props.path, timeSpan);
-    dataRepository
-        .fetchRepository(url)
+    this.cancelable = makeCancelable(dataRepository.fetchRepository(url));
+    this.cancelable.promise
         .then(result => {
           // 本地获取的是个object
           // 直接网络获取返回的是个数组

@@ -22,9 +22,11 @@ import Toast, {DURATION} from 'react-native-easy-toast';
 import GlobalStyle from '../../res/styles/GlobalStyle';
 import LanguageDao, {FLAG_LANGUAGE} from '../expand/dao/LanguageDao';
 import {ACTION_HOME, FLAG_TAB} from './HomePage';
+import makeCancelable from '../util/Cancelable';
 
 const API_URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
+const THEME_COLOR = '#2196f3';
 
 /**
  * 搜索
@@ -54,6 +56,7 @@ export default class SearchPage extends Component {
     if (this.isKeyChanged) {
       DeviceEventEmitter.emit(ACTION_HOME.FlAG, ACTION_HOME.RESTART, {jumpToTab: FLAG_TAB.TB_POPULAR});
     }
+    this.cancelable && this.cancelable.cancel();
   }
 
   async initKeys() {
@@ -82,7 +85,8 @@ export default class SearchPage extends Component {
     this.updateState({
       isLoading: true,
     })
-    fetch(this.getUrl(this.inputKey))
+    this.cancelable = makeCancelable(fetch(this.getUrl(this.inputKey)));
+    this.cancelable.promise
         .then(response => response.json())
         .then(responseData => {
           if (!this || !responseData || !responseData.items || responseData.items.length === 0) {
@@ -150,13 +154,19 @@ export default class SearchPage extends Component {
     this.setState(dic);
   }
 
+  /**
+   * 搜索或者取消
+   */
   onSearch() {
     let isLoading = this.state.isLoading;
     this.updateState({
       isLoading: !isLoading
     })
-    if (!isLoading) {
-      this.loadData()
+    if (isLoading) { // 取消搜索
+      this.cancelable && this.cancelable.cancel();
+      this.updateState({showBottomButton: false})
+    } else {// 搜索
+      this.loadData();
     }
   }
 
@@ -209,7 +219,7 @@ export default class SearchPage extends Component {
     let statusBar = Platform.OS === 'ios' ? <View>
       <StatusBar/>
     </View> : null;
-    let bottomView = this.state.showBottomButton ?
+    let bottomView = this.state.showBottomButton && !this.state.isLoading ?
         <TouchableOpacity
             style={[styles.bottmButton, styles.bgColor]}
             onPress={() => this.saveKey()}>
@@ -219,15 +229,15 @@ export default class SearchPage extends Component {
       {statusBar}
       {this.renderNavBar()}
       <View style={{flex: 1}}>
-        <ListView
+        {!this.state.isLoading ? <ListView
             dataSource={this.state.dataSource}
             renderRow={(rowData) => this.renderRow(rowData)}
             enableEmptySections={true}
-        />
+        /> : null}
         {this.state.isLoading && <ActivityIndicator
             style={styles.indicator}
             animating={this.state.isLoading}
-            color='#2196f3'
+            color={THEME_COLOR}
             size={'large'}
         />}
       </View>
@@ -237,52 +247,53 @@ export default class SearchPage extends Component {
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  },
-  text: {
-    fontSize: 16,
-    color: 'white',
-    padding: 8
-  },
-  navBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    height: Platform.OS === 'ios' ? 48 : 56
-  },
-  bgColor: {
-    backgroundColor: '#2196f3'
-  },
-  textInput: {
-    flex: 1,
-    margin: 8,
-    paddingLeft: 8,
-    paddingRight: 8,
-    borderWidth: Platform.OS === 'ios' ? 1 : 0,
-    borderColor: 'white',
-    borderRadius: 3,
-    opacity: 0.7,
-    color: 'white'
-  },
-  indicator: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    right: 0,
-    bottom: 0
-  },
-  bottmButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 48,
-    opacity: 0.95,
-    position: 'absolute',
-    left: 10,
-    top: GlobalStyle.window_height - 83,
-    right: 10,
-    bottom: 10,
-    borderRadius: 3,
-  }
-})
+const
+    styles = StyleSheet.create({
+      container: {
+        flex: 1
+      },
+      text: {
+        fontSize: 16,
+        color: 'white',
+        padding: 8
+      },
+      navBar: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        height: Platform.OS === 'ios' ? 48 : 56
+      },
+      bgColor: {
+        backgroundColor: '#2196f3'
+      },
+      textInput: {
+        flex: 1,
+        margin: 8,
+        paddingLeft: 8,
+        paddingRight: 8,
+        borderWidth: Platform.OS === 'ios' ? 1 : 0,
+        borderColor: 'white',
+        borderRadius: 3,
+        opacity: 0.7,
+        color: 'white'
+      },
+      indicator: {
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        right: 0,
+        bottom: 0
+      },
+      bottmButton: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 48,
+        opacity: 0.95,
+        position: 'absolute',
+        left: 10,
+        top: GlobalStyle.window_height - 83,
+        right: 10,
+        bottom: 10,
+        borderRadius: 3,
+      }
+    })

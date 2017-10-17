@@ -56,6 +56,7 @@ export default class HomePage extends Component {
   }
 
   onRestart(jumpToTab) {
+    // 跳转到新的场景，并且重置整个路由栈
     this.props.navigator.resetTo({
       component: HomePage,
       params: {

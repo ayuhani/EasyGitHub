@@ -15,17 +15,11 @@ import RepositoryDetail from "./RepositoryDetail";
 import ProjectModel from "../model/ProjectModel";
 import FavoriteDao from '../expand/dao/FavoriteDao';
 import ActionUtil from '../util/ActionUtil';
+import makeCancelable from '../util/Cancelable';
 
 export default class FavoritePage extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      languages: []
-    }
-  }
-
-  componentDidMount() {
-
   }
 
   render() {
@@ -67,13 +61,18 @@ class FavoriteTab extends Component {
     this.loadData();
   }
 
+  componentWillUnmount() {
+    this.cancelable && this.cancelable.cancel();
+  }
+
   updateState(dic) {
     if (!this) return;
     this.setState(dic);
   }
 
   loadData() {
-    this.favoriteDao.getAllItems()
+    this.cancelable = makeCancelable(this.favoriteDao.getAllItems());
+    this.cancelable.promise
         .then(items => {
           var resultData = [];
           for (let i = 0; i < items.length; i++) {

@@ -13,6 +13,7 @@ import LanguageDao, {FLAG_LANGUAGE} from '../../expand/dao/LanguageDao';
 import ArrayUtil from '../../util/ArrayUtil';
 import ViewUtil from '../../util/ViewUtil';
 import SortableListView from 'react-native-sortable-listview';
+import makeCancelable from '../../util/Cancelable';
 
 export default class SortKeyPage extends Component {
 
@@ -32,9 +33,14 @@ export default class SortKeyPage extends Component {
     this.loadData();
   }
 
+  componentWillUnmount() {
+    this.cancelable && this.cancelable.cancel();
+  }
+
   // 读取本地的所有标签
   loadData() {
-    this.languageDao.fetch()
+    this.cancelable = makeCancelable(this.languageDao.fetch());
+    this.cancelable.promise
         .then((result) => { // json数组
           this.getCheckedKeys(result);
         })

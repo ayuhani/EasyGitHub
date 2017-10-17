@@ -7,7 +7,8 @@ import {
   TextInput,
   DeviceEventEmitter,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
+  ActivityIndicator
 } from 'react-native';
 import NavigationBar from '../common/NavigationBar';
 import ViewUtil from '../util/ViewUtil';
@@ -15,6 +16,7 @@ import FavoriteDao from '../expand/dao/FavoriteDao';
 import ActionUtil from '../util/ActionUtil';
 
 const TRENDING_URL = 'https://www.github.com/';
+const THEME_COLOR = '#2196f3';
 
 export default class RepositoryDetail extends Component {
 
@@ -23,6 +25,7 @@ export default class RepositoryDetail extends Component {
     this.url = this.props.projectModel.rowData.html_url ? this.props.projectModel.rowData.html_url : TRENDING_URL + this.props.projectModel.rowData.fullName;
     this.favoriteDao = new FavoriteDao(this.props.flag);
     this.state = {
+      isLoading: true,
       canGoBack: false,
       title: this.props.projectModel.rowData.full_name ? this.props.projectModel.rowData.full_name : this.props.projectModel.rowData.fullName,
       isFavorite: this.props.projectModel.isFavorite,
@@ -88,14 +91,22 @@ export default class RepositoryDetail extends Component {
               leftButton={ViewUtil.getLeftButton(() => this.goBack())}
               rightButton={this.renderRightButton()}
           />
-          <WebView
-              ref={webView => this.webView = webView}
-              style={{flex: 1}}
-              source={{uri: this.url}}
-              onNavigationStateChange={this.onNavigationStateChange}
-              startInLoadingState={true}
-              javaScriptEnabled={true}
-          />
+          <View style={styles.container}>
+            <WebView
+                ref={webView => this.webView = webView}
+                style={{flex: 1}}
+                source={{uri: this.url}}
+                onNavigationStateChange={this.onNavigationStateChange}
+                onLoadEnd={() => this.setState({isLoading: false})}
+                javaScriptEnabled={true}
+            />
+            <ActivityIndicator
+                style={styles.indicator}
+                animating={this.state.isLoading}
+                color={THEME_COLOR}
+                size={'large'}
+            />
+          </View>
         </View>
     );
   }
@@ -111,5 +122,12 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 20,
     margin: 8
-  }
+  },
+  indicator: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    right: 0,
+    bottom: 0
+  },
 })
