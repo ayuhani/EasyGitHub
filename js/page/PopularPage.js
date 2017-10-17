@@ -18,9 +18,12 @@ import ProjectModel from "../model/ProjectModel";
 import FavoriteDao from '../expand/dao/FavoriteDao';
 import Utils from '../util/Utils';
 import ActionUtil from '../util/ActionUtil';
+import ViewUtil from '../util/ViewUtil';
 import SearchPage from './SearchPage';
 import {ACTION_HOME} from './HomePage';
 import makeCancelable from '../util/Cancelable';
+import MoreMenu, {MORE_MENU} from '../common/MoreMenu';
+import {FLAG_TAB} from './HomePage';
 
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
@@ -54,23 +57,43 @@ export default class PopularPage extends Component {
         })
   }
 
-  renderSearchButton() {
-    return <TouchableOpacity
-        onPress={() => {
-          this.props.navigator.push({
-            component: SearchPage,
-            params: {
-              ...this.props
-            }
-          })
-        }}
-    >
-      <View>
-        <Image
-            style={{width: 24, height: 24, margin: 8}}
-            source={require('../../res/images/ic_search_white_48pt.png')}/>
-      </View>
-    </TouchableOpacity>;
+  renderRightButton() {
+    return <View style={{flexDirection: 'row', alignItems: 'center'}}>
+      <TouchableOpacity
+          onPress={() => {
+            this.props.navigator.push({
+              component: SearchPage,
+              params: {
+                ...this.props
+              }
+            })
+          }}
+      >
+        <View>
+          <Image
+              style={{width: 24, height: 24, margin: 8}}
+              source={require('../../res/images/ic_search_white_48pt.png')}/>
+        </View>
+      </TouchableOpacity>
+      {ViewUtil.getMoreButton(() => {
+        this.refs.moreMenu.open();
+      })}
+    </View>;
+  }
+
+  renderMoreView() {
+    let params = {...this.props, fromPage: FLAG_TAB.TB_POPULAR};
+    return <MoreMenu
+        ref="moreMenu"
+        {...params}
+        menus={[
+          MORE_MENU.custom_key,
+          MORE_MENU.sort_key,
+          MORE_MENU.remove_key,
+          MORE_MENU.custom_theme,
+          MORE_MENU.about_author,
+          MORE_MENU.about]}
+        anchorView={this.refs.moreMenuButton}/>
   }
 
   render() {
@@ -92,11 +115,13 @@ export default class PopularPage extends Component {
           <NavigationBar
               leftButton={<View></View>}
               title={'最热'}
-              rightButton={this.renderSearchButton()}
+              rightButton={this.renderRightButton()}
           />
           {content}
+          {this.renderMoreView()}
         </View>
-    );
+    )
+        ;
   }
 }
 

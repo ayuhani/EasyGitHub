@@ -121,6 +121,8 @@ export default class CustomKeyPage extends Component {
     }
     this.languageDao.save(this.state.dataArray);
     this.props.navigator.pop();
+    // 通知首页重启
+
   }
 
   // 点击返回按钮

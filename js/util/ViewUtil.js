@@ -53,6 +53,17 @@ export default class ViewUtil {
       </View>
     </TouchableHighlight>
   }
+
+  static getMoreButton(callBack) {
+    return <TouchableOpacity
+        style={{padding: 5}}
+        ref="moreMenuButton"
+        onPress={callBack}>
+      <Image
+          style={{width: 24, height: 24, padding: 8, marginRight: 3}}
+          source={require('../../res/images/ic_more_vert_white_48pt.png')}/>
+    </TouchableOpacity>
+  }
 }
 
 const styles = StyleSheet.create({
