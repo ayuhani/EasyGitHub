@@ -9,11 +9,18 @@ import {
 } from 'react-native';
 import GlobalStyle from '../../../res/styles/GlobalStyle';
 import ThemeFactory, {ThemeFlags} from '../../../res/styles/ThemeFactory'
+import ThemeDao from '../../expand/dao/ThemeDao';
 
 export default class CustomThemePage extends Component {
 
-  onSelectTheme(themeKey){
-    this.props.onClose()
+  constructor(props) {
+    super(props);
+    this.themeDao = new ThemeDao();
+  }
+
+  onSelectTheme(themeKey) {
+    this.props.onClose();
+    this.themeDao.save(ThemeFlags[themeKey]);
   }
 
   /**
@@ -25,7 +32,7 @@ export default class CustomThemePage extends Component {
     return <TouchableHighlight
         style={{flex: 1}}
         underlayColor={'white'}
-        onPress={()=>this.onSelectTheme(themeKey)}
+        onPress={() => this.onSelectTheme(themeKey)}
     >
       <View style={[{backgroundColor: ThemeFlags[themeKey]}, styles.themeItem]}>
         <Text style={{color: 'white'}}>{themeKey}</Text>
