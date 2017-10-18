@@ -16,8 +16,16 @@ import GlobalStyle from '../../../res/styles/GlobalStyle';
 import ViewUtil from '../../util/ViewUtil';
 import AboutPage from '../about/AboutPage';
 import AboutAuthorPage from '../about/AboutAuthorPage';
+import CustomThemePage from './CustomThemePage';
 
 export default class MyPage extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      customThemeViewVisible: false,
+    }
+  }
 
   onClick(tab) {
     let TargetComponent, params = {...this.props, menuType: tab}
@@ -44,6 +52,9 @@ export default class MyPage extends Component {
         params.isRemoveKey = true;
         break;
       case MORE_MENU.custom_theme:
+        this.setState({
+          customThemeViewVisible: true
+        })
         break;
       case MORE_MENU.about_author:
         TargetComponent = AboutAuthorPage;
@@ -58,6 +69,16 @@ export default class MyPage extends Component {
         params: params
       })
     }
+  }
+
+  renderCustomThemeView() {
+    return <CustomThemePage
+        visible={this.state.customThemeViewVisible}
+        {...this.props}
+        onClose={() => this.setState({
+          customThemeViewVisible: false
+        })}
+    />
   }
 
   getItem(tag, icon, text, rightIcon) {
@@ -116,8 +137,8 @@ export default class MyPage extends Component {
             {/*关于作者*/}
             {this.getItem(MORE_MENU.about_author, require('./img/ic_insert_emoticon.png'), '关于作者')}
             <View style={GlobalStyle.line}/>
-
           </ScrollView>
+          {this.renderCustomThemeView()}
         </View>
     );
   }
