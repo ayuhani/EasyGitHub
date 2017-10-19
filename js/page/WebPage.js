@@ -8,8 +8,6 @@ import {
 import NavigationBar from '../common/NavigationBar';
 import ViewUtil from '../util/ViewUtil';
 
-const THEME_COLOR = '#2196f3';
-
 export default class WebPage extends Component {
   constructor(props) {
     super(props);
@@ -40,6 +38,8 @@ export default class WebPage extends Component {
     return (
         <View style={styles.container}>
           <NavigationBar
+              style={this.props.theme.styles.navBar}
+              statusBar={{backgroundColor: this.props.theme.themeColor}}
               title={this.state.title}
               leftButton={ViewUtil.getLeftButton(() => this.goBack())}
           />
@@ -55,7 +55,7 @@ export default class WebPage extends Component {
             <ActivityIndicator
                 style={styles.indicator}
                 animating={this.state.isLoading}
-                color={THEME_COLOR}
+                color={this.props.theme.themeColor}
                 size={'large'}
             />
           </View>

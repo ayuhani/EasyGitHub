@@ -18,7 +18,8 @@ export default class AboutPage extends Component {
     super(props);
     this.aboutCommon = new AboutCommon(props, (dic) => this.updateState(dic), FLAG_ABOUT.flag_about, configs);
     this.state = {
-      projectModels: []
+      projectModels: [],
+      theme: this.props.theme
     };
   }
 
@@ -61,7 +62,7 @@ export default class AboutPage extends Component {
   }
 
   getItem(tag, icon, text, rightIcon) {
-    return ViewUtil.getSettingItem(() => this.onClick(tag), icon, text, styles.tintColor, rightIcon);
+    return ViewUtil.getSettingItem(() => this.onClick(tag), icon, text, this.state.theme.styles.tabBarSelectedIcon, rightIcon);
   }
 
   render() {

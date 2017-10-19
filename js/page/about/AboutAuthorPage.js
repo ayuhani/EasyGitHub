@@ -92,7 +92,7 @@ export default class AboutAuthorPage extends Component {
   }
 
   getRow(tag, icon, text, rightIcon) {
-    return ViewUtil.getSettingItem(() => this.onClick(tag), icon, text, styles.tintColor, rightIcon);
+    return ViewUtil.getSettingItem(() => this.onClick(tag), icon, text, this.props.theme.styles.tabBarSelectedIcon, rightIcon);
   }
 
   /**

@@ -24,6 +24,7 @@ export default class MyPage extends Component {
     super(props);
     this.state = {
       customThemeViewVisible: false,
+      theme: this.props.theme
     }
   }
 
@@ -82,11 +83,13 @@ export default class MyPage extends Component {
   }
 
   getItem(tag, icon, text, rightIcon) {
-    return ViewUtil.getSettingItem(() => this.onClick(tag), icon, text, styles.tintColor, rightIcon);
+    return ViewUtil.getSettingItem(() => this.onClick(tag), icon, text, this.state.theme.styles.tabBarSelectedIcon, rightIcon);
   }
 
   render() {
     var navigationBar = <NavigationBar
+        style={this.state.theme.styles.navBar}
+        statusBar={{backgroundColor: this.state.theme.themeColor}}
         title='我的'
     />
     return (
@@ -97,12 +100,12 @@ export default class MyPage extends Component {
               <View style={styles.item}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <Image
-                      style={[styles.tintColor, {width: 56, height: 56, marginRight: 8}]}
+                      style={[this.state.theme.styles.tabBarSelectedIcon, {width: 56, height: 56, marginRight: 8}]}
                       source={require('../../../res/images/ic_trending.png')}/>
                   <Text>Easy Github</Text>
                 </View>
                 <Image
-                    style={[styles.tiaoZhuan, styles.tintColor]}
+                    style={[styles.tiaoZhuan, this.state.theme.styles.tabBarSelectedIcon]}
                     source={require('../../../res/images/ic_tiaozhuan.png')}/>
               </View>
             </TouchableHighlight>
@@ -155,9 +158,6 @@ const styles = StyleSheet.create({
     padding: 8,
     justifyContent: 'space-between',
     backgroundColor: 'white'
-  },
-  tintColor: {
-    tintColor: '#2196f3'
   },
   tiaoZhuan: {
     width: 24,

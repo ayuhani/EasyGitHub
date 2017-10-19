@@ -49,7 +49,7 @@ export default class TrendingItem extends Component {
         onPress={() => this.onPressFavorite()}
     >
       <Image
-          style={{width: 24, height: 24, tintColor: '#2196F3'}}
+          style={[{width: 24, height: 24}, this.props.theme.styles.tabBarSelectedIcon]}
           source={this.state.favoriteIcon}/>
     </TouchableOpacity>;
     return <TouchableOpacity

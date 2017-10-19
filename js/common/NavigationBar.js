@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  Image,
   Platform,
   StyleSheet,
   StatusBar
@@ -66,7 +65,7 @@ export default class NavigationBar extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#2196f3',
+
   },
   navBar: {
     justifyContent: 'space-between',

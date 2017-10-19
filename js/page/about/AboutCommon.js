@@ -92,6 +92,7 @@ export default class AboutCommon {
       let projectModel = projectModels[i];
       views.push(<PopularItem
           key={projectModel.rowData.id}
+          theme={this.props.theme}
           projectModel={projectModel}
           onItemClick={() => ActionUtil.onItemClick({
             projectModel: projectModel,
@@ -158,7 +159,7 @@ export default class AboutCommon {
     let renderConfig = this.getParallaxRenderConfig(params);
     return (
         <ParallaxScrollView
-            backgroundColor="#2196f3"
+            backgroundColor={this.props.theme.themeColor}
             headerBackgroundColor="#333"
             stickyHeaderHeight={STICKY_HEADER_HEIGHT}
             parallaxHeaderHeight={PARALLAX_HEADER_HEIGHT}
@@ -230,8 +231,5 @@ const styles = StyleSheet.create({
     marginLeft: 16,
     marginRight: 16,
     paddingVertical: 5
-  },
-  tintColor: {
-    tintColor: "#2196f3"
   }
 });

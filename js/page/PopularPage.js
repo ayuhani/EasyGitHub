@@ -35,6 +35,7 @@ export default class PopularPage extends Component {
     super(props);
     this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key);
     this.state = {
+      theme: this.props.theme,
       languages: []
     }
   }
@@ -99,7 +100,7 @@ export default class PopularPage extends Component {
   render() {
     let content = this.state.languages.length > 0 ? <ScrollableTabView
         renderTabBar={() => <ScrollableTabBar/>}
-        tabBarBackgroundColor="#2196f3"
+        tabBarBackgroundColor={this.state.theme.themeColor}
         tabBarActiveTextColor="white"
         tabBarInactiveTextColor="mintcream"
         tabBarUnderlineStyle={{backgroundColor: 'white', height: 2}}
@@ -113,6 +114,8 @@ export default class PopularPage extends Component {
     return (
         <View style={styles.container}>
           <NavigationBar
+              style={this.state.theme.styles.navBar}
+              statusBar={{backgroundColor: this.state.theme.themeColor}}
               leftButton={<View></View>}
               title={'最热'}
               rightButton={this.renderRightButton()}
@@ -240,6 +243,7 @@ class PopularTab extends Component {
 
   renderRow(projectModel) {
     return <PopularItem
+        theme={this.props.theme}
         key={projectModel.rowData.id}
         projectModel={projectModel}
         onItemClick={() => ActionUtil.onItemClick({
@@ -261,10 +265,10 @@ class PopularTab extends Component {
             <RefreshControl
                 refreshing={this.state.isLoading}
                 onRefresh={() => this.loadData()}
-                colors={['#2196f3']}
-                tintColor={'#2196f3'}
+                colors={[this.props.theme.themeColor]}
+                tintColor={this.props.theme.themeColor}
                 title='Loading...'
-                titleColor={'#2196f3'}
+                titleColor={this.props.theme.themeColor}
             />
           }
       />

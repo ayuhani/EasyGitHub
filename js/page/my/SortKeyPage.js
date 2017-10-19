@@ -127,6 +127,8 @@ export default class SortKeyPage extends Component {
     return (
         <View style={{flex: 1}}>
           <NavigationBar
+              style={this.props.theme.styles.navBar}
+              statusBar={{backgroundColor: this.props.theme.themeColor}}
               title={title}
               leftButton={ViewUtil.getLeftButton(() => {
                 this.onBack();
@@ -141,7 +143,7 @@ export default class SortKeyPage extends Component {
                 this.state.checkedArray.splice(e.to, 0, this.state.checkedArray.splice(e.from, 1)[0])
                 this.forceUpdate()
               }}
-              renderRow={row => <SortItem data={row}/>}
+              renderRow={row => <SortItem data={row} {...this.props}/>}
           />
         </View>
     );
@@ -158,7 +160,8 @@ class SortItem extends Component {
         >
           <View style={styles.row}>
             <Text style={{flex: 1}}>{this.props.data.name}</Text>
-            <Image style={styles.img} source={require('./img/ic_sort.png')}/>
+            <Image style={[styles.img, this.props.theme.styles.tabBarSelectedIcon]}
+                   source={require('./img/ic_sort.png')}/>
           </View>
         </TouchableHighlight>
     )
@@ -184,6 +187,5 @@ const styles = StyleSheet.create({
   img: {
     width: 24,
     height: 24,
-    tintColor: '#2196f3'
   }
 })

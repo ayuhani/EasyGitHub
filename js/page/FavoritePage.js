@@ -23,6 +23,9 @@ import {FLAG_TAB} from './HomePage';
 export default class FavoritePage extends Component {
   constructor(props) {
     super(props);
+    this.state = ({
+      theme: this.props.theme
+    })
   }
 
   renderRightButton() {
@@ -48,7 +51,7 @@ export default class FavoritePage extends Component {
   render() {
     let content = <ScrollableTabView
         renderTabBar={() => <ScrollableTabBar/>}
-        tabBarBackgroundColor="#2196f3"
+        tabBarBackgroundColor={this.state.theme.themeColor}
         tabBarActiveTextColor="white"
         tabBarInactiveTextColor="mintcream"
         tabBarUnderlineStyle={{backgroundColor: 'white', height: 2}}>
@@ -58,6 +61,8 @@ export default class FavoritePage extends Component {
     return (
         <View style={styles.container}>
           <NavigationBar
+              style={this.state.theme.styles.navBar}
+              statusBar={{backgroundColor: this.state.theme.themeColor}}
               leftButton={<View></View>}
               title={'收藏'}
               rightButton={this.renderRightButton()}
@@ -120,6 +125,7 @@ class FavoriteTab extends Component {
   renderRow(projectModel) {
     let ItemComponent = this.props.flag === FLAG_STORAGE.flag_popular ? PopularItem : TrendingItem;
     return <ItemComponent
+        theme={this.props.theme}
         key={this.props.flag === FLAG_STORAGE.flag_popular ? projectModel.rowData.id : projectModel.rowData.fullName}
         projectModel={projectModel}
         onItemClick={() => ActionUtil.onItemClick({
@@ -149,10 +155,10 @@ class FavoriteTab extends Component {
             <RefreshControl
                 refreshing={this.state.isLoading}
                 onRefresh={() => this.loadData()}
-                colors={['#2196f3']}
-                tintColor={'#2196f3'}
+                colors={[this.props.theme.themeColor]}
+                tintColor={this.props.theme.themeColor}
                 title='Loading...'
-                titleColor={'#2196f3'}
+                titleColor={this.props.theme.themeColor}
             />
           }
       />

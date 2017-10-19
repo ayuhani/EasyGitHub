@@ -26,7 +26,6 @@ import makeCancelable from '../util/Cancelable';
 
 const API_URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
-const THEME_COLOR = '#2196f3';
 
 /**
  * 搜索
@@ -136,6 +135,7 @@ export default class SearchPage extends Component {
   renderRow(projectModel) {
     return <PopularItem
         key={projectModel.rowData.id}
+        theme={this.props.theme}
         projectModel={projectModel}
         onItemClick={() => ActionUtil.onItemClick({
           projectModel: projectModel,
@@ -208,7 +208,7 @@ export default class SearchPage extends Component {
     >
       <Text style={styles.text}>{this.state.isLoading ? '取消' : '搜索'}</Text>
     </TouchableOpacity>;
-    return <View style={[styles.navBar, styles.bgColor]}>
+    return <View style={[styles.navBar, this.props.theme.styles.navBar]}>
       {backButton}
       {inputView}
       {rightButton}
@@ -216,12 +216,13 @@ export default class SearchPage extends Component {
   }
 
   render() {
-    let statusBar = Platform.OS === 'ios' ? <View>
-      <StatusBar/>
-    </View> : null;
+    let statusBar = Platform.OS === 'ios' ?
+        <View style={[{height: 20}, {backgroundColor: this.props.theme.themeColor}]}>
+          <StatusBar/>
+        </View> : null;
     let bottomView = this.state.showBottomButton && !this.state.isLoading ?
         <TouchableOpacity
-            style={[styles.bottmButton, styles.bgColor]}
+            style={[styles.bottmButton, this.props.theme.styles.navBar]}
             onPress={() => this.saveKey()}>
           <Text style={styles.text}>添加标签</Text>
         </TouchableOpacity> : null;
@@ -237,7 +238,7 @@ export default class SearchPage extends Component {
         {this.state.isLoading && <ActivityIndicator
             style={styles.indicator}
             animating={this.state.isLoading}
-            color={THEME_COLOR}
+            color={this.props.theme.themeColor}
             size={'large'}
         />}
       </View>
@@ -262,9 +263,6 @@ const
         justifyContent: 'space-between',
         alignItems: 'center',
         height: Platform.OS === 'ios' ? 48 : 56
-      },
-      bgColor: {
-        backgroundColor: '#2196f3'
       },
       textInput: {
         flex: 1,

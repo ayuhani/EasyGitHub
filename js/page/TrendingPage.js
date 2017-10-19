@@ -42,7 +42,8 @@ export default class PopularPage extends Component {
       languages: [],
       isVisible: false,
       buttonRect: {},
-      timeSpan: timeSpanArray[0]
+      timeSpan: timeSpanArray[0],
+      theme: this.props.theme,
     }
   }
 
@@ -131,7 +132,7 @@ export default class PopularPage extends Component {
   render() {
     let content = this.state.languages.length > 0 ? <ScrollableTabView
         renderTabBar={() => <ScrollableTabBar/>}
-        tabBarBackgroundColor="#2196f3"
+        tabBarBackgroundColor={this.state.theme.themeColor}
         tabBarActiveTextColor="white"
         tabBarInactiveTextColor="mintcream"
         tabBarUnderlineStyle={{backgroundColor: 'white', height: 2}}
@@ -167,6 +168,8 @@ export default class PopularPage extends Component {
     return (
         <View style={styles.container}>
           <NavigationBar
+              style={this.state.theme.styles.navBar}
+              statusBar={{backgroundColor: this.state.theme.themeColor}}
               leftButton={<View></View>}
               titleView={this.renderTitleView()}
               rightButton={this.renderRightButton()}
@@ -299,6 +302,7 @@ class TrendingTab extends Component {
   // 渲染行
   renderRow(projectModel) {
     return <TrendingItem
+        theme={this.props.theme}
         key={projectModel.rowData.fullName}
         projectModel={projectModel}
         onItemClick={() => ActionUtil.onItemClick({
@@ -320,10 +324,10 @@ class TrendingTab extends Component {
             <RefreshControl
                 refreshing={this.state.isLoading}
                 onRefresh={() => this.loadData(this.props.timeSpan)}
-                colors={['#2196f3']}
-                tintColor={'#2196f3'}
+                colors={[this.props.theme.themeColor]}
+                tintColor={this.props.theme.themeColor}
                 title='Loading...'
-                titleColor={'#2196f3'}
+                titleColor={this.props.theme.themeColor}
             />
           }
       />
