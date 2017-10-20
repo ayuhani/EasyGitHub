@@ -24,25 +24,33 @@ import {ACTION_HOME} from './HomePage';
 import makeCancelable from '../util/Cancelable';
 import MoreMenu, {MORE_MENU} from '../common/MoreMenu';
 import {FLAG_TAB} from './HomePage';
+import BaseComponent from './BaseComponent';
+import CustomThemePage from './my/CustomThemePage';
 
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
 var dataRepository = new DataRepository(FLAG_STORAGE.flag_popular);
 var favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
 
-export default class PopularPage extends Component {
+export default class PopularPage extends BaseComponent {
   constructor(props) {
     super(props);
     this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key);
     this.state = {
       theme: this.props.theme,
-      languages: []
+      languages: [],
+      customThemeViewVisible: false,
     }
   }
 
   componentDidMount() {
+    super.componentDidMount();
     // 组件挂载完成，加载本地的key
     this.loadLanguage();
+  }
+
+  componentWillUnmount() {
+    super.componentWillUnmount();
   }
 
   // 加载数据
@@ -94,7 +102,20 @@ export default class PopularPage extends Component {
           MORE_MENU.custom_theme,
           MORE_MENU.about_author,
           MORE_MENU.about]}
-        anchorView={this.refs.moreMenuButton}/>
+        anchorView={this.refs.moreMenuButton}
+        showThemeView={() => this.setState({
+          customThemeViewVisible: true
+        })}/>
+  }
+
+  renderCustomThemeView() {
+    return <CustomThemePage
+        visible={this.state.customThemeViewVisible}
+        {...this.props}
+        onClose={() => this.setState({
+          customThemeViewVisible: false
+        })}
+    />
   }
 
   render() {
@@ -108,7 +129,11 @@ export default class PopularPage extends Component {
       {this.state.languages.map((result, i, arr) => {
         let lan = arr[i];
         return lan.checked ?
-            <PopularTab tabLabel={lan.name} key={i} path={lan.path} {...this.props}></PopularTab> : null;
+            <PopularTab
+                tabLabel={lan.name}
+                key={i}
+                path={lan.path}
+                {...this.props}></PopularTab> : null;
       })}
     </ScrollableTabView> : null;
     return (
@@ -122,9 +147,9 @@ export default class PopularPage extends Component {
           />
           {content}
           {this.renderMoreView()}
+          {this.renderCustomThemeView()}
         </View>
     )
-        ;
   }
 }
 
@@ -163,6 +188,8 @@ class PopularTab extends Component {
     if (this.isFavoriteChanged) {
       this.isFavoriteChanged = false;
       this.getFavoriteKeys();
+    } else if (nextProps.theme !== this.props.theme) {
+      this.flushFavoriteState()
     }
   }
 

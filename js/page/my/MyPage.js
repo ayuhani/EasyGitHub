@@ -17,8 +17,9 @@ import ViewUtil from '../../util/ViewUtil';
 import AboutPage from '../about/AboutPage';
 import AboutAuthorPage from '../about/AboutAuthorPage';
 import CustomThemePage from './CustomThemePage';
+import BaseComponent from '../BaseComponent';
 
-export default class MyPage extends Component {
+export default class MyPage extends BaseComponent {
 
   constructor(props) {
     super(props);
@@ -26,6 +27,14 @@ export default class MyPage extends Component {
       customThemeViewVisible: false,
       theme: this.props.theme
     }
+  }
+
+  componentDidMount() {
+    super.componentDidMount();
+  }
+
+  componentWillUnmount() {
+    super.componentWillUnmount();
   }
 
   onClick(tab) {

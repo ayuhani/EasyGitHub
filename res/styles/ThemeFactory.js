@@ -34,21 +34,21 @@ export const ThemeFlags = {
 export default class ThemeFactory {
   /**
    * 创建一个主题样式
-   * @param themeFlag 主题标识
+   * @param themeColor 主题标识
    * @returns {{themeColor: *, styles: *}}
    */
-  static createTheme(themeFlag) {
+  static createTheme(themeColor) {
     return {
-      themeColor: themeFlag,
+      themeColor: themeColor,
       styles: StyleSheet.create({
         selectedTitleStyle: {
-          color: themeFlag,
+          color: themeColor,
         },
         tabBarSelectedIcon: {
-          tintColor: themeFlag,
+          tintColor: themeColor,
         },
         navBar: {
-          backgroundColor: themeFlag,
+          backgroundColor: themeColor,
         }
       }),
     }

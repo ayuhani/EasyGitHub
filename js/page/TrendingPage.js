@@ -25,16 +25,18 @@ import makeCancelable from '../util/Cancelable';
 import ViewUtil from '../util/ViewUtil';
 import MoreMenu, {MORE_MENU} from '../common/MoreMenu';
 import {FLAG_TAB} from './HomePage';
-
+import BaseComponent from './BaseComponent';
+import CustomThemePage from './my/CustomThemePage';
 
 const URL = 'https://github.com/trending/';
-const timeSpanArray = [new TimeSpan('本 日', 'since=daily'),
+const timeSpanArray = [
+  new TimeSpan('本 日', 'since=daily'),
   new TimeSpan('本 周', 'since=weekly'),
   new TimeSpan('本 月', 'since=monthly')];
 var dataRepository = new DataRepository(FLAG_STORAGE.flag_trending);
 var favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_trending);
 
-export default class PopularPage extends Component {
+export default class PopularPage extends BaseComponent {
   constructor(props) {
     super(props);
     this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_language);
@@ -44,12 +46,18 @@ export default class PopularPage extends Component {
       buttonRect: {},
       timeSpan: timeSpanArray[0],
       theme: this.props.theme,
+      customThemeViewVisible: false,
     }
   }
 
   componentDidMount() {
+    super.componentDidMount();
     // 组件挂载完成，加载本地的key
     this.loadLanguage();
+  }
+
+  componentWillUnmount() {
+    super.componentWillUnmount();
   }
 
   // 加载数据
@@ -126,7 +134,20 @@ export default class PopularPage extends Component {
           MORE_MENU.custom_theme,
           MORE_MENU.about_author,
           MORE_MENU.about]}
-        anchorView={this.refs.moreMenuButton}/>
+        anchorView={this.refs.moreMenuButton}
+        showThemeView={() => this.setState({
+          customThemeViewVisible: true
+        })}/>
+  }
+
+  renderCustomThemeView() {
+    return <CustomThemePage
+        visible={this.state.customThemeViewVisible}
+        {...this.props}
+        onClose={() => this.setState({
+          customThemeViewVisible: false
+        })}
+    />
   }
 
   render() {
@@ -177,6 +198,7 @@ export default class PopularPage extends Component {
           {content}
           {timeSpanView}
           {this.renderMoreView()}
+          {this.renderCustomThemeView()}
         </View>
     );
   }
@@ -217,6 +239,8 @@ class TrendingTab extends Component {
     } else if (this.isFavoriteChanged) {
       this.isFavoriteChanged = false;
       this.getFavoriteKeys();
+    } else if (nextProps.theme !== this.props.theme) {
+      this.flushFavoriteState()
     }
   }
 

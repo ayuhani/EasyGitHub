@@ -5,11 +5,14 @@ import {
   TouchableHighlight,
   Text,
   Modal,
-  ScrollView
+  ScrollView,
+  DeviceEventEmitter
 } from 'react-native';
 import GlobalStyle from '../../../res/styles/GlobalStyle';
-import ThemeFactory, {ThemeFlags} from '../../../res/styles/ThemeFactory'
+import {ThemeFlags} from '../../../res/styles/ThemeFactory'
 import ThemeDao from '../../expand/dao/ThemeDao';
+import {ACTION_HOME} from "../HomePage";
+import ThemeFactory from '../../../res/styles/ThemeFactory';
 
 export default class CustomThemePage extends Component {
 
@@ -21,6 +24,7 @@ export default class CustomThemePage extends Component {
   onSelectTheme(themeKey) {
     this.props.onClose();
     this.themeDao.save(ThemeFlags[themeKey]);
+    DeviceEventEmitter.emit(ACTION_HOME.BASE, ACTION_HOME.CHANGE_THEME, {theme: ThemeFactory.createTheme(ThemeFlags[themeKey])})
   }
 
   /**

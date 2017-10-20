@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import CustomKeyPage from '../page/my/CustomKeyPage';
+import CustomThemePage from '../page/my/CustomThemePage';
 import SortKeyPage from '../page/my/SortKeyPage';
 import AboutPage from '../page/about/AboutPage';
 import AboutAuthorPage from '../page/about/AboutAuthorPage';
@@ -148,6 +149,7 @@ export default class MoreMenu extends Component {
         params.isRemoveKey = true;
         break;
       case MORE_MENU.custom_theme:
+        this.props.showThemeView();
         break;
       case MORE_MENU.about_author:
         TargetComponent = AboutAuthorPage;

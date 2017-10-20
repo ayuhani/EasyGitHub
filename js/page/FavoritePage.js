@@ -19,13 +19,24 @@ import makeCancelable from '../util/Cancelable';
 import ViewUtil from '../util/ViewUtil';
 import MoreMenu, {MORE_MENU} from '../common/MoreMenu';
 import {FLAG_TAB} from './HomePage';
+import BaseComponent from './BaseComponent';
+import CustomThemePage from './my/CustomThemePage';
 
-export default class FavoritePage extends Component {
+export default class FavoritePage extends BaseComponent {
   constructor(props) {
     super(props);
     this.state = ({
-      theme: this.props.theme
+      theme: this.props.theme,
+      customThemeViewVisible: false,
     })
+  }
+
+  componentDidMount() {
+    super.componentDidMount();
+  }
+
+  componentWillUnmount() {
+    super.componentWillUnmount();
   }
 
   renderRightButton() {
@@ -45,7 +56,20 @@ export default class FavoritePage extends Component {
           MORE_MENU.custom_theme,
           MORE_MENU.about_author,
           MORE_MENU.about]}
-        anchorView={this.refs.moreMenuButton}/>
+        anchorView={this.refs.moreMenuButton}
+        showThemeView={() => this.setState({
+          customThemeViewVisible: true
+        })}/>
+  }
+
+  renderCustomThemeView() {
+    return <CustomThemePage
+        visible={this.state.customThemeViewVisible}
+        {...this.props}
+        onClose={() => this.setState({
+          customThemeViewVisible: false
+        })}
+    />
   }
 
   render() {
@@ -69,6 +93,7 @@ export default class FavoritePage extends Component {
           />
           {content}
           {this.renderMoreView()}
+          {this.renderCustomThemeView()}
         </View>
     );
   }
@@ -102,18 +127,29 @@ class FavoriteTab extends Component {
     this.setState(dic);
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.theme !== this.props.theme) {
+      this.flushFavoriteState()
+    }
+  }
+
+  flushFavoriteState() {
+    let resultData = [];
+    for (let i = 0; i < this.items.length; i++) {
+      resultData.push(new ProjectModel(this.items[i], true));
+    }
+    this.updateState({
+      isLoading: false,
+      dataSource: this.state.dataSource.cloneWithRows(resultData)
+    })
+  }
+
   loadData() {
     this.cancelable = makeCancelable(this.favoriteDao.getAllItems());
     this.cancelable.promise
         .then(items => {
-          var resultData = [];
-          for (let i = 0; i < items.length; i++) {
-            resultData.push(new ProjectModel(items[i], true));
-          }
-          this.updateState({
-            isLoading: false,
-            dataSource: this.state.dataSource.cloneWithRows(resultData)
-          })
+          this.items = items;
+          this.flushFavoriteState();
         })
         .catch(e => {
           this.updateState({

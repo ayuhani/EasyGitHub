@@ -17,8 +17,15 @@ import TrendingPage from './TrendingPage';
 import FavoritePage from './FavoritePage';
 import MyPage from './my/MyPage';
 import Toast, {DURATION} from 'react-native-easy-toast';
+import BaseComponent from './BaseComponent';
 
-export const ACTION_HOME = {FlAG: 'action_home', SHOW_TOAST: 'showToast', RESTART: 'restart'};
+export const ACTION_HOME = {
+  FlAG: 'action_home',
+  BASE: 'action_base',
+  SHOW_TOAST: 'showToast',
+  RESTART: 'restart',
+  CHANGE_THEME: 'change_theme'
+};
 export const FLAG_TAB = {
   TB_POPULAR: 'tb_popular',
   TB_TRENDING: 'tb_trending',
@@ -26,7 +33,7 @@ export const FLAG_TAB = {
   TB_MY: 'tb_my'
 };
 
-export default class HomePage extends Component {
+export default class HomePage extends BaseComponent {
   constructor(props) {
     super(props);
     let selectedTab = this.props.selectedTab ? this.props.selectedTab : FLAG_TAB.TB_POPULAR;
@@ -37,6 +44,7 @@ export default class HomePage extends Component {
   }
 
   componentDidMount() {
+    super.componentDidMount();
     this.listener = DeviceEventEmitter.addListener(ACTION_HOME.FlAG, (action, params) => this.onAction(action, params));
   }
 
@@ -68,6 +76,7 @@ export default class HomePage extends Component {
   }
 
   componentWillUnmount() {
+    super.componentWillUnmount()
     this.listener && this.listener.remove();
   }
 
@@ -81,7 +90,9 @@ export default class HomePage extends Component {
         renderSelectedIcon={() => <Image style={[styles.bottomImage, this.state.theme.styles.tabBarSelectedIcon]}
                                          source={tabImg}/>}
         onPress={() => this.setState({selectedTab: tabText})}>
-      <Component {...this.props}/>
+      <Component
+          {...this.props}
+          theme={this.state.theme}/>
     </TabNavigator.Item>;
   }
 
