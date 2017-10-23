@@ -7,13 +7,11 @@ import {
 } from 'react-native';
 import ViewUtil from '../../util/ViewUtil';
 import GlobalStyle from '../../../res/styles/GlobalStyle';
-import {MORE_MENU, INFO} from '../../common/MoreMenu';
+import {INFO} from '../../common/MoreMenu';
 import AboutCommon, {FLAG_ABOUT} from './AboutCommon';
 import WebPage from '../WebPage';
 import configs from '../../../res/data/config.json';
 import Toast, {DURATION} from 'react-native-easy-toast';
-import ActionUtil from '../../util/ActionUtil';
-
 
 export default class AboutAuthorPage extends Component {
   constructor(props) {

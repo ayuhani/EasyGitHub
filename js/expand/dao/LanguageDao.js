@@ -1,9 +1,5 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity,
   AsyncStorage
 } from 'react-native';
 import keys from '../../../res/data/keys.json';

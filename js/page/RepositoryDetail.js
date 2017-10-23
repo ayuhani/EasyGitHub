@@ -2,10 +2,7 @@ import React, {Component} from 'react';
 import {
   StyleSheet,
   View,
-  Text,
   WebView,
-  TextInput,
-  DeviceEventEmitter,
   Image,
   TouchableOpacity,
   ActivityIndicator

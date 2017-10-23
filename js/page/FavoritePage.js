@@ -11,7 +11,6 @@ import NavigationBar from '../common/NavigationBar';
 import {FLAG_STORAGE} from '../expand/dao/DataRepository';
 import PopularItem from '../common/PopularItem';
 import TrendingItem from '../common/TrendingItem';
-import RepositoryDetail from "./RepositoryDetail";
 import ProjectModel from "../model/ProjectModel";
 import FavoriteDao from '../expand/dao/FavoriteDao';
 import ActionUtil from '../util/ActionUtil';

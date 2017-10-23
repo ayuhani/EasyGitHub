@@ -4,8 +4,7 @@ import {
   View,
   Text,
   Image,
-  TouchableOpacity,
-  TouchableHighlight
+  TouchableOpacity
 } from 'react-native';
 import HTMLView from 'react-native-htmlview';
 

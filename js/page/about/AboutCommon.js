@@ -14,7 +14,6 @@ import {FLAG_STORAGE} from "../../expand/dao/DataRepository";
 import ProjectModel from '../../model/ProjectModel';
 import Utils from '../../util/Utils';
 import PopularItem from '../../common/PopularItem';
-import RepositoryDetail from '../../page/RepositoryDetail';
 import ReposiroryUtil from '../../expand/dao/RepositoryUtil';
 import ActionUtil from '../../util/ActionUtil';
 

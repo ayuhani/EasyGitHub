@@ -13,7 +13,6 @@ import NavigationBar from '../common/NavigationBar';
 import DataRepository, {FLAG_STORAGE} from '../expand/dao/DataRepository';
 import PopularItem from '../common/PopularItem';
 import LanguageDao, {FLAG_LANGUAGE} from '../expand/dao/LanguageDao';
-import RepositoryDetail from "./RepositoryDetail";
 import ProjectModel from "../model/ProjectModel";
 import FavoriteDao from '../expand/dao/FavoriteDao';
 import Utils from '../util/Utils';
