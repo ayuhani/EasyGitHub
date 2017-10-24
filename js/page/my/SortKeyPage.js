@@ -16,11 +16,13 @@ import ViewUtil from '../../util/ViewUtil';
 import SortableListView from 'react-native-sortable-listview';
 import makeCancelable from '../../util/Cancelable';
 import {ACTION_HOME, FLAG_TAB} from '../HomePage';
+import BackPressCommon from '../../common/BackPressCommon';
 
 export default class SortKeyPage extends Component {
 
   constructor(props) {
     super(props);
+    this.backPress = new BackPressCommon({backPress: (e) => this.onBackPress(e)})
     this.dataArray = []; // 本地存储的原始key的数组
     this.sortResultArray = []; //排序之后的所有key的数组
     this.originalCheckedArray = []; // 排序之前的已订阅key的数组
@@ -30,13 +32,20 @@ export default class SortKeyPage extends Component {
     this.languageDao = new LanguageDao(this.props.flag);
   }
 
+  onBackPress(e) {
+    this.onBack()
+    return true;
+  }
+
   // 装载完成之后读取所有的标签
   componentDidMount() {
     this.loadData();
+    this.backPress.componentDidMount()
   }
 
   componentWillUnmount() {
     this.cancelable && this.cancelable.cancel();
+    this.backPress.componentWillUnmount()
   }
 
   // 读取本地的所有标签

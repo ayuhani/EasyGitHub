@@ -23,6 +23,7 @@ import GlobalStyle from '../../res/styles/GlobalStyle';
 import LanguageDao, {FLAG_LANGUAGE} from '../expand/dao/LanguageDao';
 import {ACTION_HOME, FLAG_TAB} from './HomePage';
 import makeCancelable from '../util/Cancelable';
+import BackPressCommon from '../common/BackPressCommon';
 
 const API_URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
@@ -33,6 +34,7 @@ const QUERY_STR = '&sort=stars';
 export default class SearchPage extends Component {
   constructor(props) {
     super(props);
+    this.backPress = new BackPressCommon({backPress: (e) => this.onBackPress(e)})
     this.favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
     this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key);
     this.keys = [];
@@ -45,9 +47,16 @@ export default class SearchPage extends Component {
     }
   }
 
+  onBackPress(e) {
+    this.refs.input.blur();
+    this.props.navigator.pop();
+    return true;
+  }
+
   // 读取所有标签，用来判断是否显示添加标签
   componentDidMount() {
     this.initKeys();
+    this.backPress.componentDidMount()
   }
 
   // 当用户添加了新的标签后才发送通知
@@ -56,6 +65,7 @@ export default class SearchPage extends Component {
       DeviceEventEmitter.emit(ACTION_HOME.FlAG, ACTION_HOME.RESTART, {jumpToTab: FLAG_TAB.TB_POPULAR});
     }
     this.cancelable && this.cancelable.cancel();
+    this.backPress.componentWillUnmount()
   }
 
   async initKeys() {

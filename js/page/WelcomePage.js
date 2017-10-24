@@ -31,7 +31,7 @@ export default class WelcomePage extends Component {
           theme: this.theme,
         }
       })
-    }, 500);
+    }, 2000);
   }
 
   componentWillUnmount() {

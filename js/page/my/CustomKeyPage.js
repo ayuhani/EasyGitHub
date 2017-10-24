@@ -16,10 +16,12 @@ import LanuageDao, {FLAG_LANGUAGE} from '../../expand/dao/LanguageDao';
 import CheckBox from 'react-native-check-box';
 import makeCancelable from '../../util/Cancelable';
 import {ACTION_HOME, FLAG_TAB} from '../HomePage';
+import BackPressCommon from '../../common/BackPressCommon';
 
 export default class CustomKeyPage extends Component {
   constructor(props) {
     super(props);
+    this.backPress = new BackPressCommon({backPress: (e) => this.onBackPress(e)})
     this.isRemoveKey = this.props.isRemoveKey ? true : false; // 判断是移除标签还是自定义标签
     this.languageDao = new LanuageDao(this.props.flag);
     this.changeValues = [];
@@ -28,13 +30,20 @@ export default class CustomKeyPage extends Component {
     }
   }
 
+  onBackPress(e) {
+    this.onBack()
+    return true;
+  }
+
   componentDidMount() {
     // 组件挂载完成，加载数据
     this.loadData();
+    this.backPress.componentDidMount()
   }
 
   componentWillUnmount() {
     this.cancelable && this.cancelable.cancel();
+    this.backPress.componentWillUnmount()
   }
 
   // 加载数据，

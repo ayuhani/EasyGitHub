@@ -29,6 +29,11 @@ export default class AboutAuthorPage extends Component {
 
   componentDidMount() {
     this.aboutCommon.loadData();
+    this.aboutCommon.componentDidMount()
+  }
+
+  componentWillUnmount() {
+    this.aboutCommon.componentWillUnmount()
   }
 
   updateState(dic) {

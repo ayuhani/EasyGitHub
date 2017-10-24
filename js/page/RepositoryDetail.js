@@ -11,14 +11,15 @@ import NavigationBar from '../common/NavigationBar';
 import ViewUtil from '../util/ViewUtil';
 import FavoriteDao from '../expand/dao/FavoriteDao';
 import ActionUtil from '../util/ActionUtil';
+import BackPressCommon from '../common/BackPressCommon';
 
 const TRENDING_URL = 'https://www.github.com/';
-const THEME_COLOR = '#2196f3';
 
 export default class RepositoryDetail extends Component {
 
   constructor(props) {
     super(props);
+    this.backPress = new BackPressCommon({backPress: (e) => this.onBackPress(e)})
     this.url = this.props.projectModel.rowData.html_url ? this.props.projectModel.rowData.html_url : TRENDING_URL + this.props.projectModel.rowData.fullName;
     this.favoriteDao = new FavoriteDao(this.props.flag);
     this.state = {
@@ -29,6 +30,15 @@ export default class RepositoryDetail extends Component {
       favoriteIcon: this.props.projectModel.isFavorite ? require('../../res/images/ic_star.png') :
           require('../../res/images/ic_star_navbar.png')
     }
+  }
+
+  componentDidMount() {
+    this.backPress.componentDidMount()
+  }
+
+  onBackPress(e) {
+    this.goBack()
+    return true;
   }
 
   onNavigationStateChange = (navState) => {
@@ -56,6 +66,7 @@ export default class RepositoryDetail extends Component {
 
   componentWillUnmount() {
     // this.props.onUpdateAfterFavorite();
+    this.backPress.componentWillUnmount()
   }
 
   setFavoriteState(isFavorite) {

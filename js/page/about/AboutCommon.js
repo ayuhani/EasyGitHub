@@ -16,6 +16,7 @@ import Utils from '../../util/Utils';
 import PopularItem from '../../common/PopularItem';
 import ReposiroryUtil from '../../expand/dao/RepositoryUtil';
 import ActionUtil from '../../util/ActionUtil';
+import BackPressCommon from '../../common/BackPressCommon';
 
 export var FLAG_ABOUT = {flag_about: 'about', flag_about_author: 'about_author'};
 
@@ -29,6 +30,20 @@ export default class AboutCommon {
     this.favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_my);
     this.repositoryUtil = new ReposiroryUtil(this);
     this.configs = configs;
+    this.backPress = new BackPressCommon({backPress: (e) => this.onBackPress(e)})
+  }
+
+  onBackPress(e) {
+    this.props.navigator.pop();
+    return true;
+  }
+
+  componentDidMount() {
+    this.backPress.componentDidMount()
+  }
+
+  componentWillUnmount() {
+    this.backPress.componentWillUnmount()
   }
 
   loadData() {

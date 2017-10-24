@@ -13,12 +13,27 @@ import {ThemeFlags} from '../../../res/styles/ThemeFactory'
 import ThemeDao from '../../expand/dao/ThemeDao';
 import {ACTION_HOME} from "../HomePage";
 import ThemeFactory from '../../../res/styles/ThemeFactory';
+import BackPressCommon from '../../common/BackPressCommon';
 
 export default class CustomThemePage extends Component {
 
   constructor(props) {
     super(props);
+    this.backPress = new BackPressCommon({backPress: (e) => this.onBackPress(e)})
     this.themeDao = new ThemeDao();
+  }
+
+  onBackPress(e) {
+    this.props.onClose()
+    return true;
+  }
+
+  componentDidMount() {
+    this.backPress.componentDidMount()
+  }
+
+  componentWillUnmount() {
+    this.backPress.componentWillUnmount()
   }
 
   onSelectTheme(themeKey) {
