@@ -6,6 +6,7 @@ import {
 import NavigationBar from '../common/NavigationBar';
 import HomePage from './HomePage';
 import ThemeDao from '../expand/dao/ThemeDao';
+import SplashScreen from 'react-native-splash-screen';
 
 export default class WelcomePage extends Component {
 
@@ -23,13 +24,14 @@ export default class WelcomePage extends Component {
 
         });
     this.timer = setTimeout(() => {
+      SplashScreen.hide();
       this.props.navigator.resetTo({
         component: HomePage,
         params: {
           theme: this.theme,
         }
       })
-    }, 1000);
+    }, 500);
   }
 
   componentWillUnmount() {
@@ -37,15 +39,6 @@ export default class WelcomePage extends Component {
   }
 
   render() {
-    return (
-        <View>
-          <NavigationBar
-              title={'欢迎'}
-              style={{backgroundColor: 'green'}}
-              statusBar={{backgroundColor: 'green'}}
-          />
-          <Text>欢迎欢迎{'\n'}热烈欢迎</Text>
-        </View>
-    );
+    return null;
   }
 }
