@@ -6,20 +6,35 @@
 
 import React, {Component} from 'react';
 import {
-  DeviceEventEmitter
+  DeviceEventEmitter,
+  BackHandler
 } from 'react-native';
 import {ACTION_HOME} from './HomePage';
+import BackPressCommon from '../common/BackPressCommon';
+
 
 export default class BaseComponent extends Component {
   constructor(props) {
     super(props);
+    this.backPressCommon = new BackPressCommon({backPress: (e) => this.onBackPress(e)})
     this.state = {
       theme: this.props.theme,
     };
   }
 
+  onBackPress(e) {
+    BackHandler.exitApp();
+    return true;
+  }
+
   componentDidMount() {
     this.baseListener = DeviceEventEmitter.addListener(ACTION_HOME.BASE, (action, params) => this.onBaseAction(action, params));
+    this.backPressCommon.componentDidMount()
+  }
+
+  componentWillUnmount() {
+    this.baseListener && this.baseListener.remove();
+    this.backPressCommon.componentWillUnmount()
   }
 
   /**
@@ -48,10 +63,6 @@ export default class BaseComponent extends Component {
     this.setState({
       theme: theme
     })
-  }
-
-  componentWillUnmount() {
-    this.baseListener && this.baseListener.remove();
   }
 
 }

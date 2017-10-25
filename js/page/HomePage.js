@@ -10,8 +10,7 @@ import {
   StyleSheet,
   View,
   Image,
-  DeviceEventEmitter,
-  BackHandler
+  DeviceEventEmitter
 } from 'react-native';
 import PopularPage from './PopularPage';
 import TrendingPage from './TrendingPage';
@@ -19,7 +18,6 @@ import FavoritePage from './FavoritePage';
 import MyPage from './my/MyPage';
 import Toast, {DURATION} from 'react-native-easy-toast';
 import BaseComponent from './BaseComponent';
-import BackPressCommon from '../common/BackPressCommon';
 
 export const ACTION_HOME = {
   FlAG: 'action_home',
@@ -38,7 +36,6 @@ export const FLAG_TAB = {
 export default class HomePage extends BaseComponent {
   constructor(props) {
     super(props);
-    this.backPress = new BackPressCommon({backPress: (e) => this.onBackPress(e)})
     let selectedTab = this.props.selectedTab ? this.props.selectedTab : FLAG_TAB.TB_POPULAR;
     this.state = {
       selectedTab: selectedTab,
@@ -46,21 +43,14 @@ export default class HomePage extends BaseComponent {
     };
   }
 
-  onBackPress(e) {
-    // BackHandler.exitApp()
-    return false;
-  }
-
   componentDidMount() {
     super.componentDidMount();
     this.listener = DeviceEventEmitter.addListener(ACTION_HOME.FlAG, (action, params) => this.onAction(action, params));
-    this.backPress.componentDidMount()
   }
 
   componentWillUnmount() {
     super.componentWillUnmount()
     this.listener && this.listener.remove();
-    this.backPress.componentWillUnmount()
   }
 
   /**
