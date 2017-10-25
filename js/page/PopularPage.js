@@ -197,7 +197,7 @@ class PopularTab extends Component {
    */
   flushFavoriteState() {
     let projectModels = [];
-    let items = this.items;
+    let items = this.items ? this.items : [];
     for (let i = 0; i < items.length; i++) {
       projectModels.push(new ProjectModel(items[i], Utils.checkFavorite(items[i], this.state.favoriteKeys)));
     }

@@ -134,8 +134,9 @@ class FavoriteTab extends Component {
 
   flushFavoriteState() {
     let resultData = [];
-    for (let i = 0; i < this.items.length; i++) {
-      resultData.push(new ProjectModel(this.items[i], true));
+    let items = this.items ? this.items : [];
+    for (let i = 0; i < items.length; i++) {
+      resultData.push(new ProjectModel(items[i], true));
     }
     this.updateState({
       isLoading: false,

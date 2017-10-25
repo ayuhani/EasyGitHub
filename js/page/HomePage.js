@@ -85,7 +85,8 @@ export default class HomePage extends BaseComponent {
       component: HomePage,
       params: {
         ...this.props,
-        selectedTab: jumpToTab
+        selectedTab: jumpToTab,
+        theme: this.state.theme
       }
     })
   }
