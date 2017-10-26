@@ -3,6 +3,7 @@
 ## 说明
 
 根据慕课网的视频课程写的一个 RN GitHub 客户端，基本功能都已经实现，还差热更新与分享功能，以后不定时更新。
+
 由于硬件原因，目前只适配了 Android 端。
 
 课程地址：http://coding.imooc.com/class/89.html
