@@ -7,6 +7,8 @@
 
 课程地址：http://coding.imooc.com/class/89.html
 
+所有图片资源均出自原项目。
+
 原项目地址：https://github.com/crazycodeboy/GitHubPopular
 
 ## 下载
